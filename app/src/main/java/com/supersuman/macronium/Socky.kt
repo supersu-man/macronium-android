@@ -9,7 +9,7 @@ import java.net.SocketException
 import kotlin.concurrent.thread
 
 
-class Socky(val gridLayout: View) {
+class Socky(private val gridLayout: View) {
 
     private var s = Socket()
     private val port = 6969

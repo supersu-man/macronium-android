@@ -13,6 +13,7 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.google.common.util.concurrent.ListenableFuture
 import com.google.mlkit.vision.barcode.Barcode
 import com.google.mlkit.vision.barcode.BarcodeScanner
 import com.google.mlkit.vision.barcode.BarcodeScannerOptions
@@ -22,25 +23,34 @@ import java.util.concurrent.Executors
 
 
 class ScannerActivity : AppCompatActivity() {
-    lateinit var previewView : PreviewView
-    lateinit var scanner : BarcodeScanner
+
+    private lateinit var previewView : PreviewView
+    private lateinit var scanner : BarcodeScanner
+    private lateinit var cameraProviderFuture : ListenableFuture<ProcessCameraProvider>
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_scanner)
 
+        initViews()
         ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.CAMERA),100)
-         previewView = findViewById(R.id.previewView)
         val options : BarcodeScannerOptions = BarcodeScannerOptions.Builder().setBarcodeFormats(Barcode.FORMAT_QR_CODE,Barcode.FORMAT_AZTEC).build()
         scanner = BarcodeScanning.getClient(options)
-        val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
 
 
+        cameraProviderFuture = ProcessCameraProvider.getInstance(this)
+        initListeners()
+
+
+    }
+
+    private fun initListeners() {
         cameraProviderFuture.addListener({
             val cameraProvider : ProcessCameraProvider = cameraProviderFuture.get()
+            val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
             val preview = Preview.Builder().build().also {
                 it.setSurfaceProvider(previewView.surfaceProvider)
             }
-            val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
             val imageAnalyzer =  ImageAnalysis.Builder().build().also {
                 it.setAnalyzer(Executors.newSingleThreadExecutor(),ScannerAnalyzer(scanner,this))
                 it.targetRotation = previewView.display.rotation
@@ -52,7 +62,10 @@ class ScannerActivity : AppCompatActivity() {
                 println(e)
             }
         }, ContextCompat.getMainExecutor(this))
+    }
 
+    private fun initViews() {
+        previewView = findViewById(R.id.previewView)
     }
 }
 
