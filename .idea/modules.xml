@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/Macronium.iml" filepath="$PROJECT_DIR$/.idea/modules/Macronium.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/AnimatedTabLayout/Macronium.AnimatedTabLayout.iml" filepath="$PROJECT_DIR$/.idea/modules/AnimatedTabLayout/Macronium.AnimatedTabLayout.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/Macronium.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/Macronium.app.iml" />
     </modules>
   </component>

@@ -1,2 +1,3 @@
 rootProject.name = "Macronium"
 include ':app'
+include ':AnimatedTabLayout'
