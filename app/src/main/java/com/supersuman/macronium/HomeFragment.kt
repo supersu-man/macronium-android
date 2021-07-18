@@ -20,7 +20,6 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.textview.MaterialTextView
 import org.json.JSONArray
-import javax.sql.StatementEvent
 
 
 class HomeFragment : Fragment() {
@@ -42,7 +41,6 @@ class HomeFragment : Fragment() {
             }
         }
     }
-
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {

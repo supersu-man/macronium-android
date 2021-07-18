@@ -4,7 +4,7 @@ import java.util.*
 import kotlin.collections.HashMap
 
 class PresetsData {
-    //Display Name , simplified shortcut combo, pynput command
+    //("Display Name" , "simplified shortcut combo", "pynput command")
     val data :MutableList<MutableList<String>> = mutableListOf(
         mutableListOf("Screenshot","Win+PrtSc","Key.cmd+Key.print_screen"),
         mutableListOf("Copy","Ctrl+C","Key.ctrl+c"),
@@ -16,6 +16,8 @@ class PresetsData {
         mutableListOf("Volume Up","","Key.media_volume_up"),
         mutableListOf("Previous Track","","Key.media_previous"),
         mutableListOf("Next Track","","Key.media_next"),
+        mutableListOf("Screen Snip","Win+Shift+S","Key.cmd+Key.shift+s"),
+        mutableListOf("Task View","Win+Tab","Key.cmd+Key.tab"),
         mutableListOf("F13","","Key.f13"),
         mutableListOf("F14","","Key.f14"),
         mutableListOf("F15","","Key.f15"),
