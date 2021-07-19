@@ -48,7 +48,7 @@ dependencies {
     implementation "androidx.camera:camera-view:1.0.0-alpha26"
     implementation project(':AnimatedTabLayout')
     implementation 'io.karn:khttp-android:0.1.0'
-    implementation 'com.github.supersu-man:GitHubAPKUpdater-Library:v1.0'
+    implementation 'com.github.supersu-man:GitHubAPKUpdater-Library:v1.1'
 
 
 }
