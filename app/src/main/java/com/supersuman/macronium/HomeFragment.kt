@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.content.res.Resources
+import android.os.Build
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.Gravity
@@ -27,17 +28,21 @@ class HomeFragment : Fragment() {
     private lateinit var gridLayout: GridLayout
     private lateinit var connectButton : MaterialCardView
     private lateinit var disconnectButton : MaterialCardView
-    private lateinit var connectionStatus : MaterialTextView
-    private lateinit var socky : Socky
     private lateinit var presetsData: PresetsData
     private lateinit var sharedpref : SharedPreferences.OnSharedPreferenceChangeListener
     private lateinit var sharedPreferences: SharedPreferences
     private val resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+
         if (result.resultCode == Activity.RESULT_OK) {
-            val data: Intent? = result.data
-            socky.connectSocket(data?.getStringExtra("result").toString())
-            if (socky.isConnected()){
-                connectionStatus.text = "Connected"
+            val v = result.data?.getStringExtra("result").toString()
+            val intent = Intent(requireActivity(), BackgroundService::class.java)
+            intent.action = "CONNECT"
+            intent.putExtra("result", v)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                activity?.startForegroundService(intent)
+                activity?.startService(Intent(requireActivity(),BackgroundService::class.java))
+            }else{
+                activity?.startService(intent)
             }
         }
     }
@@ -53,7 +58,6 @@ class HomeFragment : Fragment() {
         initViews()
         addCardsToGrid(sharedPreferences,"presets")
         initListeners()
-
     }
 
     private fun initListeners() {
@@ -68,8 +72,11 @@ class HomeFragment : Fragment() {
             launchActivityForResult()
         }
         disconnectButton.setOnClickListener {
-            socky.disconnectSocket()
-            connectionStatus.text = "Disconnected"
+            try {
+                activity?.stopService(Intent(requireActivity(), BackgroundService::class.java))
+            }catch (e:Exception){
+
+            }
         }
     }
 
@@ -112,7 +119,10 @@ class HomeFragment : Fragment() {
         cardView.layoutParams = cardParams
 
         cardView.setOnClickListener {
-            socky.sendMessage("Macronium-key <$string2>")
+            val intent = Intent(requireActivity(), BackgroundService::class.java)
+            intent.action = "SEND_MESSAGE"
+            intent.putExtra("message","Macronium-key <$string2>")
+            requireActivity().startService(intent)
         }
 
         cardView.addView(textView)
@@ -133,9 +143,7 @@ class HomeFragment : Fragment() {
         presetsData = PresetsData()
         connectButton = requireActivity().findViewById(R.id.connectButton)
         gridLayout  = requireActivity().findViewById(R.id.fragmentHomeGridlayout)
-        socky = Socky(gridLayout)
         disconnectButton = requireActivity().findViewById(R.id.disconnectButton)
-        connectionStatus = requireActivity().findViewById(R.id.connectionStatus)
         sharedPreferences = requireActivity().getSharedPreferences("PinnedPresets", Context.MODE_PRIVATE)
     }
 

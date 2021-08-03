@@ -1,6 +1,9 @@
 package com.supersuman.macronium
 
+import android.content.Context
+import android.os.Looper
 import android.view.View
+import android.widget.Toast
 import com.google.android.material.snackbar.Snackbar
 import java.io.PrintWriter
 import java.net.InetSocketAddress
@@ -9,7 +12,7 @@ import java.net.SocketException
 import kotlin.concurrent.thread
 
 
-class Socky(private val gridLayout: View) {
+class Socky(val context: Context) {
 
     private var s = Socket()
     private val port = 6969
@@ -22,11 +25,10 @@ class Socky(private val gridLayout: View) {
                     s= Socket()
                 }
             }catch (e : UninitializedPropertyAccessException){
-                showSnackBar("No connection made yet. Please connect.",gridLayout)
+                myToast("No connection made yet. Please connect.")
             }catch (e : Exception){
-                showSnackBar(e.toString(), gridLayout)
+                myToast(e.toString())
             }
-
         }
     }
 
@@ -35,11 +37,18 @@ class Socky(private val gridLayout: View) {
             try {
                 s.connect(InetSocketAddress(address, port))
                 s.keepAlive = true
-                showSnackBar("Connected successfully.",gridLayout)
+                myToast("Connected successfully")
             }catch (e : Exception){
-                showSnackBar(e.toString(), gridLayout)
+                myToast(e.toString())
             }
         }.join()
+    }
+
+    fun myToast(string: String){
+        val handler = android.os.Handler(Looper.getMainLooper())
+        handler.post {
+            Toast.makeText(context, string,Toast.LENGTH_SHORT).show()
+        }
     }
 
     fun isConnected(): Boolean {
@@ -50,7 +59,6 @@ class Socky(private val gridLayout: View) {
         }
     }
 
-
     fun sendMessage(message : String) {
         thread {
             try {
@@ -58,11 +66,11 @@ class Socky(private val gridLayout: View) {
                 pw.write(message)
                 pw.flush()
             }catch (e : SocketException) {
-                showSnackBar("Please re-connect.", gridLayout)
+                myToast(e.toString())
             }catch (e : UninitializedPropertyAccessException){
-                showSnackBar("No connection made yet. Please connect.",gridLayout)
+                myToast(e.toString())
             }catch (e : Exception){
-                showSnackBar(e.toString(), gridLayout)
+                myToast(e.toString())
             }
         }
     }
