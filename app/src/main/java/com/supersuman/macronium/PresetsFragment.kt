@@ -4,20 +4,20 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.EditorInfo
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.card.MaterialCardView
+import com.commit451.teleprinter.Teleprinter
 import com.google.android.material.textfield.TextInputEditText
 import com.iammert.library.AnimatedTabLayout
 
 class PresetsFragment : Fragment() {
     private lateinit var recyclerView : RecyclerView
     private lateinit var tabLayout: AnimatedTabLayout
-    private lateinit var materialCardView: MaterialCardView
     private lateinit var searchBar: TextInputEditText
+    private lateinit var teleprinter : Teleprinter
     private val presetsData = PresetsData()
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_presets, container, false)
@@ -29,27 +29,20 @@ class PresetsFragment : Fragment() {
 
         recyclerView.layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.VERTICAL,false)
         recyclerView.adapter = PresetsRecyclerViewAdapter(requireContext(),presetsData.data)
-        tabLayout.setTabChangeListener(object : AnimatedTabLayout.OnChangeListener{
-            override fun onChanged(position: Int) {
-                when(position){
-                    0 -> {
-                        materialCardView.animate().translationY(0f)
-                        searchBar.clearFocus()
-                    }
-                    1 -> materialCardView.animate().translationY(materialCardView.height.toFloat()+50)
-                }
-            }
-        })
+
         searchBar.addTextChangedListener {
             recyclerView.adapter = PresetsRecyclerViewAdapter(requireContext(),presetsData.getSearchResults(it.toString()))
+        }
+        teleprinter.addOnKeyboardClosedListener {
+            searchBar.clearFocus()
         }
     }
 
 
 
     private fun initViews() {
+        teleprinter = Teleprinter(requireActivity() as AppCompatActivity, true)
         recyclerView = requireActivity().findViewById(R.id.fragmentPresetsRecyclerView)
-        materialCardView = requireActivity().findViewById(R.id.mainActivityButtonsParentCard)
         tabLayout = requireActivity().findViewById(R.id.mainActivityTabLayout)
         searchBar = requireActivity().findViewById(R.id.fragmentPresetsSearchBar)
     }

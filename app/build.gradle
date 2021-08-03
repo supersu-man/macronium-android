@@ -11,8 +11,8 @@ android {
         applicationId "com.supersuman.macronium"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 3
-        versionName "1.2"
+        versionCode 4
+        versionName "1.3"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -33,22 +33,21 @@ android {
 
 dependencies {
     implementation 'androidx.core:core-ktx:1.6.0'
-    implementation 'androidx.appcompat:appcompat:1.3.0'
+    implementation 'androidx.appcompat:appcompat:1.3.1'
     implementation 'com.google.android.material:material:1.4.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+
     implementation 'com.google.mlkit:barcode-scanning:16.2.0'
     implementation 'com.google.android.gms:play-services-mlkit-barcode-scanning:16.2.0'
-    def camerax_version = "1.0.0"
-    implementation "androidx.camera:camera-camera2:$camerax_version"
-    implementation "androidx.camera:camera-lifecycle:$camerax_version"
-    implementation "androidx.camera:camera-view:1.0.0-alpha26"
-    implementation project(':AnimatedTabLayout')
-    implementation 'io.karn:khttp-android:0.1.0'
-    implementation 'com.github.supersu-man:GitHubAPKUpdater-Library:v1.1'
-
+    implementation "androidx.camera:camera-camera2:1.0.1"
+    implementation "androidx.camera:camera-lifecycle:1.0.1"
+    implementation "androidx.camera:camera-view:1.0.0-alpha27"
+    implementation 'com.github.iammert:AnimatedTabLayout:af7128e570'
+    implementation "com.github.Commit451:Teleprinter:2.2.0"
 
 }

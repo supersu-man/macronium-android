@@ -77,13 +77,10 @@ private class ScannerAnalyzer(val scanner: BarcodeScanner, val scannerActivity: 
         scanner.process(image1)
             .addOnSuccessListener { mutableList ->
                 mutableList.forEach {
-                    if (it.rawValue!!.toString().split(".").size  ==4){
-                        println(it.rawValue)
-                        val returnIntent = Intent()
-                        returnIntent.putExtra("result",it.rawValue)
-                        scannerActivity.setResult(Activity.RESULT_OK, returnIntent)
-                        scannerActivity.finish()
-                    }
+                    val returnIntent = Intent()
+                    returnIntent.putExtra("result",it.rawValue)
+                    scannerActivity.setResult(Activity.RESULT_OK, returnIntent)
+                    scannerActivity.finish()
                 }
             }
             .addOnCompleteListener {
