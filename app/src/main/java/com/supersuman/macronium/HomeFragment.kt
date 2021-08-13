@@ -40,7 +40,6 @@ class HomeFragment : Fragment() {
             intent.putExtra("result", v)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 activity?.startForegroundService(intent)
-                activity?.startService(Intent(requireActivity(),BackgroundService::class.java))
             }else{
                 activity?.startService(intent)
             }

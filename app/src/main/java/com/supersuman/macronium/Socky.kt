@@ -65,17 +65,9 @@ class Socky(val context: Context) {
                 val pw = PrintWriter(s.getOutputStream())
                 pw.write(message)
                 pw.flush()
-            }catch (e : SocketException) {
-                myToast(e.toString())
-            }catch (e : UninitializedPropertyAccessException){
-                myToast(e.toString())
             }catch (e : Exception){
                 myToast(e.toString())
             }
         }
-    }
-
-    fun showSnackBar( message: String, view: View){
-        Snackbar.make(view, message, Snackbar.LENGTH_SHORT).show()
     }
 }
