@@ -1,6 +1,7 @@
 package com.supersuman.macronium
 
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager.widget.ViewPager
@@ -18,11 +19,24 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        setUpIntent()
+
         initViews()
         setupTabLayout()
         setupViewPager()
     }
 
+    private fun setUpIntent() {
+        when (intent.action) {
+            Intent.ACTION_SEND -> {
+                val link = intent.getStringExtra(Intent.EXTRA_TEXT)
+                val intent = Intent(this, BackgroundService::class.java)
+                intent.action = "SEND_MESSAGE"
+                intent.putExtra("message","Macronium-link <$link>")
+                startService(intent)
+            }
+        }
+    }
 
 
     private fun setupTabLayout() {

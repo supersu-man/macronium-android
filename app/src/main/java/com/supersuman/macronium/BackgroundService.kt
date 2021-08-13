@@ -9,7 +9,9 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 
 class BackgroundService : Service() {
+
     private val socky = Socky(this)
+
     override fun onStart(intent: Intent?, startId: Int) {
         if (intent?.action == "CONNECT"){
             socky.connectSocket(intent.getStringExtra("result")!!)
@@ -26,13 +28,10 @@ class BackgroundService : Service() {
 
     override fun onDestroy() {
         try {
-            val notificationManager: NotificationManager =
-                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.cancel(69)
             socky.disconnectSocket()
-        }catch (e:Exception){
-
-        }
+            stopForeground(true)
+            stopSelf()
+        }catch (e:Exception){}
     }
 
     override fun onBind(intent: Intent?): IBinder? {
