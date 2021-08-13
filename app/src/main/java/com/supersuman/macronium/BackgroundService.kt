@@ -14,7 +14,7 @@ class BackgroundService : Service() {
         if (intent?.action == "CONNECT"){
             socky.connectSocket(intent.getStringExtra("result")!!)
             if (socky.isConnected()){
-                showNotification()
+                startForeground(69,showNotification())
             }
         }
         else if (intent?.action == "SEND_MESSAGE"){
@@ -39,7 +39,7 @@ class BackgroundService : Service() {
         return null
     }
 
-    private fun showNotification(){
+    private fun showNotification(): Notification {
         val intent = Intent(this, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
@@ -52,6 +52,7 @@ class BackgroundService : Service() {
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setContentIntent(pendingIntent)
             .setOngoing(true)
+            .build()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val name = "Background service"
             val descriptionText = "Notifications related to background services"
@@ -63,8 +64,6 @@ class BackgroundService : Service() {
                 getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(channel)
         }
-        with(NotificationManagerCompat.from(this)) {
-            notify(69, builder.build())
-        }
+        return builder
     }
 }
