@@ -29,7 +29,11 @@ class PresetsData {
         mutableListOf("F21","","Key.f21"),
         mutableListOf("F22","","Key.f22"),
         mutableListOf("F23","","Key.f23"),
-        mutableListOf("F24","","Key.f24")
+        mutableListOf("F24","","Key.f24"),
+        mutableListOf("Right","","Key.right"),
+        mutableListOf("Left","","Key.left"),
+        mutableListOf("Up","","Key.up"),
+        mutableListOf("Down","","Key.down")
     )
     fun getMappedData(string: String): String? {
         val v = HashMap<String,String>()

@@ -1,10 +1,12 @@
 package com.supersuman.macronium
 
 import android.app.*
+import android.app.PendingIntent.FLAG_IMMUTABLE
 import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.IBinder
+import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 
@@ -38,11 +40,18 @@ class BackgroundService : Service() {
         return null
     }
 
+
     private fun showNotification(): Notification {
         val intent = Intent(this, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
-        val pendingIntent: PendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
+
+
+        val pendingIntent: PendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            PendingIntent.getActivity(this, 0, intent, FLAG_IMMUTABLE)
+        } else {
+            PendingIntent.getActivity(this, 0, intent, 0)
+        }
 
         val builder = NotificationCompat.Builder(this, "69")
             .setSmallIcon(R.drawable.ic_notification)
