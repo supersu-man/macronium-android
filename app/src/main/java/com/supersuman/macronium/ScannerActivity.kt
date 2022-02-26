@@ -2,31 +2,29 @@ package com.supersuman.macronium
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.ContentValues.TAG
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import androidx.camera.core.CameraSelector
-import androidx.camera.core.ImageAnalysis
-import androidx.camera.core.ImageProxy
-import androidx.camera.core.Preview
+import androidx.camera.camera2.Camera2Config
+import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.google.common.util.concurrent.ListenableFuture
-import com.google.mlkit.vision.barcode.Barcode
 import com.google.mlkit.vision.barcode.BarcodeScanner
 import com.google.mlkit.vision.barcode.BarcodeScannerOptions
 import com.google.mlkit.vision.barcode.BarcodeScanning
+import com.google.mlkit.vision.barcode.common.Barcode
 import com.google.mlkit.vision.common.InputImage
 import java.util.concurrent.Executors
 
 
-class ScannerActivity : AppCompatActivity() {
+class ScannerActivity : AppCompatActivity(){
 
     private lateinit var previewView : PreviewView
     private lateinit var scanner : BarcodeScanner
-    private lateinit var cameraProviderFuture : ListenableFuture<ProcessCameraProvider>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,20 +32,23 @@ class ScannerActivity : AppCompatActivity() {
 
         initViews()
         ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.CAMERA),100)
-        val options : BarcodeScannerOptions = BarcodeScannerOptions.Builder().setBarcodeFormats(Barcode.FORMAT_QR_CODE,Barcode.FORMAT_AZTEC).build()
+        val options : BarcodeScannerOptions = BarcodeScannerOptions.Builder().setBarcodeFormats(
+            Barcode.FORMAT_QR_CODE,Barcode.FORMAT_AZTEC).build()
         scanner = BarcodeScanning.getClient(options)
-
-
-        cameraProviderFuture = ProcessCameraProvider.getInstance(this)
-        initListeners()
-
+        startCamera()
 
     }
 
-    private fun initListeners() {
+    private fun initViews() {
+        previewView = findViewById(R.id.previewView)
+    }
+
+    private fun startCamera() {
+        val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
         cameraProviderFuture.addListener({
-            val cameraProvider : ProcessCameraProvider = cameraProviderFuture.get()
+            val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
             val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
+
             val preview = Preview.Builder().build().also {
                 it.setSurfaceProvider(previewView.surfaceProvider)
             }
@@ -57,15 +58,11 @@ class ScannerActivity : AppCompatActivity() {
             }
             try {
                 cameraProvider.unbindAll()
-                cameraProvider.bindToLifecycle(this,cameraSelector , preview, imageAnalyzer)
-            } catch (e : Exception){
-                println(e)
+                cameraProvider.bindToLifecycle(this, cameraSelector, preview, imageAnalyzer)
+            } catch(exc: Exception) {
+                Log.e(TAG, "Use case binding failed", exc)
             }
         }, ContextCompat.getMainExecutor(this))
-    }
-
-    private fun initViews() {
-        previewView = findViewById(R.id.previewView)
     }
 }
 
