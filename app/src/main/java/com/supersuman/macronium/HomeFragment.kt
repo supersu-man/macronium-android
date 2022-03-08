@@ -81,7 +81,7 @@ class HomeFragment : Fragment() {
         }
 
         sharedPreferences.registerOnSharedPreferenceChangeListener(sharedpref)
-        
+
         connectButton.setOnClickListener {
             scanQrCode.launch(null)
         }
