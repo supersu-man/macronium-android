@@ -6,25 +6,23 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.IBinder
-import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
 
 class BackgroundService : Service() {
 
     private val socky = Socky(this)
 
     override fun onStart(intent: Intent?, startId: Int) {
-        if (intent?.action == "CONNECT"){
-            socky.connectSocket(intent.getStringExtra("result")!!)
-            if (socky.isConnected()){
-                startForeground(69,showNotification())
+        when(intent?.action) {
+            "CONNECT" -> {
+                startForeground(69, showNotification())
+                val qrstring = intent.getStringExtra("qrstring").toString()
+                socky.connectSocket(qrstring)
             }
-        }
-        else if (intent?.action == "SEND_MESSAGE"){
-            socky.sendMessage(intent.getStringExtra("message")!!)
-        } else{
-            println("Dummy")
+            "SEND_MESSAGE" -> {
+                val arg = intent.getStringExtra("arg").toString()
+                socky.sendMessage("key-press", arg)
+            }
         }
     }
 
@@ -40,12 +38,11 @@ class BackgroundService : Service() {
         return null
     }
 
-
     private fun showNotification(): Notification {
+
         val intent = Intent(this, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
-
 
         val pendingIntent: PendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             PendingIntent.getActivity(this, 0, intent, FLAG_IMMUTABLE)

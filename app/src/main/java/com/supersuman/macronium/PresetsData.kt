@@ -3,54 +3,53 @@ package com.supersuman.macronium
 import java.util.*
 import kotlin.collections.HashMap
 
+class Preset(val displayName : String, val key : String)
+
 class PresetsData {
-    //("Display Name" , "simplified shortcut combo", "pynput command")
-    val data :MutableList<MutableList<String>> = mutableListOf(
-        mutableListOf("Screenshot","Win+PrtSc","Key.cmd+Key.print_screen"),
-        mutableListOf("Copy","Ctrl+C","Key.ctrl+c"),
-        mutableListOf("Cut","Ctrl+X","Key.ctrl+x"),
-        mutableListOf("Paste","Ctrl+V","Key.ctrl+v"),
-        mutableListOf("Play/Pause","","Key.media_play_pause"),
-        mutableListOf("Mute","","Key.media_volume_mute"),
-        mutableListOf("Volume Down","","Key.media_volume_down"),
-        mutableListOf("Volume Up","","Key.media_volume_up"),
-        mutableListOf("Previous Track","","Key.media_previous"),
-        mutableListOf("Next Track","","Key.media_next"),
-        mutableListOf("Screen Snip","Win+Shift+S","Key.cmd+Key.shift+s"),
-        mutableListOf("Task View","Win+Tab","Key.cmd+Key.tab"),
-        mutableListOf("F13","","Key.f13"),
-        mutableListOf("F14","","Key.f14"),
-        mutableListOf("F15","","Key.f15"),
-        mutableListOf("F16","","Key.f16"),
-        mutableListOf("F17","","Key.f17"),
-        mutableListOf("F18","","Key.f18"),
-        mutableListOf("F19","","Key.f19"),
-        mutableListOf("F20","","Key.f20"),
-        mutableListOf("F21","","Key.f21"),
-        mutableListOf("F22","","Key.f22"),
-        mutableListOf("F23","","Key.f23"),
-        mutableListOf("F24","","Key.f24"),
-        mutableListOf("Right","","Key.right"),
-        mutableListOf("Left","","Key.left"),
-        mutableListOf("Up","","Key.up"),
-        mutableListOf("Down","","Key.down")
+    val data :MutableList<Preset> = mutableListOf(
+        Preset("Space", "Space"),
+        Preset("Tab", "Tab"),
+        Preset("Escape", "Escape"),
+        Preset("Alt", "LeftAlt"),
+        Preset("Control", "LeftControl"),
+        Preset("Shift", "LeftShift"),
+        Preset("Super", "LeftSuper"),
+        Preset("Enter", "Enter"),
+        Preset("Return", "Return"),
+        Preset("Home","Home"),
+        Preset("End","End"),
+        Preset("PageUp","PageUp"),
+        Preset("PageDown","PageDown"),
+        Preset("Print","Print"),
+        Preset("Stop","AudioStop"),
+        Preset("Play","AudioPlay"),
+        Preset("Pause","AudioPause"),
+        Preset("Mute","AudioMute"),
+        Preset("Volume Down","AudioVolDown"),
+        Preset("Volume Up","AudioVolUp"),
+        Preset("Previous Track","AudioPrev"),
+        Preset("Next Track","AudioNext"),
+        Preset("Right","Right"),
+        Preset("Left","Left"),
+        Preset("Up","Up"),
+        Preset("Down","Down")
     )
+
     fun getMappedData(string: String): String? {
         val v = HashMap<String,String>()
         for (i in data){
-            v[i[2]]=i[0]
+            v[i.key]=i.displayName
         }
         return v[string]
     }
-    fun getSearchResults(string: String): MutableList<MutableList<String>> {
-        val v = mutableListOf<MutableList<String>>()
 
+    fun getSearchResults(string: String): MutableList<Preset> {
+        val v = mutableListOf<Preset>()
         for(i in data){
-            if (string.lowercase(Locale.getDefault()) in i[0].lowercase(Locale.getDefault()) || string in i[1].lowercase(Locale.getDefault())){
+            if (string.lowercase(Locale.getDefault()) in i.displayName.lowercase(Locale.getDefault())){
                 v.add(i)
             }
         }
         return v
     }
-
 }

@@ -1,12 +1,12 @@
 package com.supersuman.macronium
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.content.res.Resources
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.util.TypedValue
@@ -16,10 +16,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.GridLayout
 import android.widget.TextView
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import com.google.android.material.card.MaterialCardView
-import com.google.android.material.textview.MaterialTextView
+import io.github.g00fy2.quickie.QRResult
+import io.github.g00fy2.quickie.ScanQRCode
 import org.json.JSONArray
 
 
@@ -31,16 +31,20 @@ class HomeFragment : Fragment() {
     private lateinit var presetsData: PresetsData
     private lateinit var sharedpref : SharedPreferences.OnSharedPreferenceChangeListener
     private lateinit var sharedPreferences: SharedPreferences
-    private val resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+    //private lateinit var repoButton : MaterialCardView
 
-        if (result.resultCode == Activity.RESULT_OK) {
-            val v = result.data?.getStringExtra("result").toString()
-            val intent = Intent(requireActivity(), BackgroundService::class.java)
-            intent.action = "CONNECT"
-            intent.putExtra("result", v)
+    val scanQrCode = registerForActivityResult(ScanQRCode(), ::handleResult)
+
+    private fun handleResult(result : QRResult){
+        if (result is QRResult.QRSuccess){
+            val ipAddress = result.content.rawValue
+            val intent = Intent(requireActivity(), BackgroundService::class.java).apply {
+                action = "CONNECT"
+                putExtra("qrstring", ipAddress)
+            }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 activity?.startForegroundService(intent)
-            }else{
+            } else {
                 activity?.startService(intent)
             }
         }
@@ -51,12 +55,20 @@ class HomeFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_home, container, false)
     }
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initViews()
         addCardsToGrid(sharedPreferences,"presets")
         initListeners()
+    }
+
+    private fun initViews(){
+        presetsData = PresetsData()
+        connectButton = requireActivity().findViewById(R.id.connectButton)
+        gridLayout  = requireActivity().findViewById(R.id.fragmentHomeGridlayout)
+        disconnectButton = requireActivity().findViewById(R.id.disconnectButton)
+        sharedPreferences = requireActivity().getSharedPreferences("PREFERENCES", Context.MODE_PRIVATE)
+        //repoButton = requireActivity().findViewById(R.id.repoButton)
     }
 
     private fun initListeners() {
@@ -68,15 +80,19 @@ class HomeFragment : Fragment() {
         }
         sharedPreferences.registerOnSharedPreferenceChangeListener(sharedpref)
         connectButton.setOnClickListener {
-            launchActivityForResult()
+            scanQrCode.launch(null)
         }
         disconnectButton.setOnClickListener {
             try {
                 activity?.stopService(Intent(requireActivity(), BackgroundService::class.java))
-            }catch (e:Exception){
-
-            }
+            } catch (e:Exception){}
         }
+        /*
+        repoButton.setOnClickListener {
+            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/supersu-man/macronium-pc/releases/latest"))
+            startActivity(browserIntent)
+        }
+         */
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
@@ -100,9 +116,9 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun makeCard(string1: String, string2: String): MaterialCardView {
+    private fun makeCard(displayName: String, key: String): MaterialCardView {
         val textView = TextView(requireContext())
-        textView.text = string1
+        textView.text = displayName
         textView.gravity = Gravity.CENTER
         textView.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
 
@@ -120,7 +136,7 @@ class HomeFragment : Fragment() {
         cardView.setOnClickListener {
             val intent = Intent(requireActivity(), BackgroundService::class.java)
             intent.action = "SEND_MESSAGE"
-            intent.putExtra("message","Macronium-key <$string2>")
+            intent.putExtra("arg", key)
             requireActivity().startService(intent)
         }
 
@@ -138,13 +154,7 @@ class HomeFragment : Fragment() {
         return px
     }
 
-    private fun initViews(){
-        presetsData = PresetsData()
-        connectButton = requireActivity().findViewById(R.id.connectButton)
-        gridLayout  = requireActivity().findViewById(R.id.fragmentHomeGridlayout)
-        disconnectButton = requireActivity().findViewById(R.id.disconnectButton)
-        sharedPreferences = requireActivity().getSharedPreferences("PinnedPresets", Context.MODE_PRIVATE)
-    }
+
 
     private fun loadOrderedCollection(sharedPreferences: SharedPreferences, key: String): MutableList<String> {
         val arrayList = mutableListOf<String>()
@@ -163,10 +173,4 @@ class HomeFragment : Fragment() {
         return columns
     }
 
-    @SuppressLint("SetTextI18n")
-    private fun launchActivityForResult(){
-        val intent = Intent(requireContext(), ScannerActivity::class.java)
-        resultLauncher.launch(intent)
-    }
-    
 }

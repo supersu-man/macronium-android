@@ -10,14 +10,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textview.MaterialTextView
 import org.json.JSONArray
 
-class PresetsRecyclerViewAdapter(context: Context, private val mutableList : MutableList<MutableList<String>>) : RecyclerView.Adapter<PresetsRecyclerViewAdapter.ViewHolder>() {
+class PresetsRecyclerViewAdapter(context: Context, private val mutableList : MutableList<Preset>) : RecyclerView.Adapter<PresetsRecyclerViewAdapter.ViewHolder>() {
 
-    private val sharedPreferences: SharedPreferences = context.getSharedPreferences("PinnedPresets", Context.MODE_PRIVATE)
+    private val sharedPreferences: SharedPreferences = context.getSharedPreferences("PREFERENCES", Context.MODE_PRIVATE)
     val s: MutableList<String> = loadOrderedCollection("presets")
 
     class ViewHolder(view : View) : RecyclerView.ViewHolder(view) {
         val textView1 : MaterialTextView = view.findViewById(R.id.presetsTextView1)
-        val textView2 : MaterialTextView = view.findViewById(R.id.presetsTextView2)
         val pin : ImageView = view.findViewById(R.id.presetImageView)
     }
 
@@ -27,9 +26,8 @@ class PresetsRecyclerViewAdapter(context: Context, private val mutableList : Mut
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
-        holder.textView1.text = mutableList[position][0]
-        holder.textView2.text = mutableList[position][1]
-        if (mutableList[position][2] in s){
+        holder.textView1.text = mutableList[position].displayName
+        if (mutableList[position].key in s){
             holder.pin.tag = "pinned"
             holder.pin.setImageResource(R.drawable.ic_baseline_push_pin_24)
         }
@@ -37,12 +35,12 @@ class PresetsRecyclerViewAdapter(context: Context, private val mutableList : Mut
             if (holder.pin.tag == "unpinned"){
                 holder.pin.tag = "pinned"
                 holder.pin.setImageResource(R.drawable.ic_baseline_push_pin_24)
-                s.add(mutableList[position][2])
+                s.add(mutableList[position].key)
                 saveOrderedCollection(s,"presets")
             } else{
                 holder.pin.tag = "unpinned"
                 holder.pin.setImageResource(R.drawable.ic_outline_push_pin_24)
-                s.remove(mutableList[position][2])
+                s.remove(mutableList[position].key)
                 saveOrderedCollection(s,"presets")
             }
         }
