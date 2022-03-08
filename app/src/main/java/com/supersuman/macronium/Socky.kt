@@ -2,72 +2,54 @@ package com.supersuman.macronium
 
 import android.content.Context
 import android.os.Looper
-import android.view.View
 import android.widget.Toast
-import com.google.android.material.snackbar.Snackbar
+import io.socket.client.IO
+import io.socket.client.Socket
+import io.socket.client.Socket.EVENT_CONNECT
+import io.socket.client.Socket.EVENT_DISCONNECT
+import io.socket.emitter.Emitter
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.io.PrintWriter
 import java.net.InetSocketAddress
-import java.net.Socket
-import java.net.SocketException
+import java.net.URI
 import kotlin.concurrent.thread
+import kotlin.coroutines.CoroutineContext
 
 
-class Socky(val context: Context) {
+class Socky(private val context: Context) {
 
-    private var s = Socket()
+    private val coroutineScope = CoroutineScope(Dispatchers.IO)
     private val port = 6969
+    private var socket: Socket? = null
 
-    fun disconnectSocket(){
-        thread {
-            try {
-                if (s.isConnected){
-                    s.close()
-                    s= Socket()
-                }
-            }catch (e : UninitializedPropertyAccessException){
-                myToast("No connection made yet. Please connect.")
-            }catch (e : Exception){
-                myToast(e.toString())
+    fun connectSocket(address : String) = coroutineScope.launch {
+        println("Function is being called")
+        try {
+            socket = IO.socket(URI.create("http://$address:$port"))
+            socket?.on(EVENT_CONNECT) {
+                myToast("Connected to server")
             }
+            socket?.connect()
+        } catch (e: Exception) {
+            println(e)
         }
     }
 
-    fun connectSocket(address : String){
-        thread {
-            try {
-                s.connect(InetSocketAddress(address, port))
-                s.keepAlive = true
-                myToast("Connected successfully")
-            }catch (e : Exception){
-                myToast(e.toString())
-            }
-        }.join()
+    fun disconnectSocket() = coroutineScope.launch {
+        socket?.disconnect()
     }
 
-    fun myToast(string: String){
-        val handler = android.os.Handler(Looper.getMainLooper())
-        handler.post {
-            Toast.makeText(context, string,Toast.LENGTH_SHORT).show()
-        }
+    private fun myToast(string: String) = coroutineScope.launch(Dispatchers.Main){
+        Toast.makeText(context, string,Toast.LENGTH_SHORT).show()
     }
 
-    fun isConnected(): Boolean {
-        return try {
-            s.isConnected
-        }catch (e:Exception){
-            false
-        }
+    fun isConnected(): Boolean? {
+        return socket?.connected()
     }
 
-    fun sendMessage(message : String) {
-        thread {
-            try {
-                val pw = PrintWriter(s.getOutputStream())
-                pw.write(message)
-                pw.flush()
-            }catch (e : Exception){
-                myToast(e.toString())
-            }
-        }
+    fun sendMessage(event : String, arg : String) = coroutineScope.launch {
+        socket?.emit(event, arg)
     }
 }

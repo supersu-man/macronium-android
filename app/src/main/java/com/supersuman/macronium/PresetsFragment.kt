@@ -19,6 +19,7 @@ class PresetsFragment : Fragment() {
     private lateinit var searchBar: TextInputEditText
     private lateinit var teleprinter : Teleprinter
     private val presetsData = PresetsData()
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_presets, container, false)
     }
@@ -37,8 +38,6 @@ class PresetsFragment : Fragment() {
             searchBar.clearFocus()
         }
     }
-
-
 
     private fun initViews() {
         teleprinter = Teleprinter(requireActivity() as AppCompatActivity, true)
