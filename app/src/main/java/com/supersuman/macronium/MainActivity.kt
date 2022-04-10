@@ -5,13 +5,14 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager.widget.ViewPager
+import androidx.viewpager.widget.ViewPager.OnPageChangeListener
 import com.google.android.material.card.MaterialCardView
-import com.iammert.library.AnimatedTabLayout
+import com.google.android.material.tabs.TabLayout
 
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var tabLayout: AnimatedTabLayout
+    private lateinit var tabLayout: TabLayout
     private lateinit var viewPager: ViewPager
     private lateinit var materialCardView : MaterialCardView
 
@@ -22,8 +23,9 @@ class MainActivity : AppCompatActivity() {
         setUpIntent()
 
         initViews()
-        setupTabLayout()
         setupViewPager()
+        setupTabLayout()
+
     }
 
     private fun setUpIntent() {
@@ -38,29 +40,30 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun initViews(){
+        tabLayout = findViewById(R.id.mainActivityTabLayout)
+        viewPager = findViewById(R.id.MainActivityViewPager)
+        materialCardView = findViewById(R.id.mainActivityButtonsParentCard)
+    }
 
-    private fun setupTabLayout() {
-        tabLayout.setupViewPager(viewPager)
-        tabLayout.setTabChangeListener(object : AnimatedTabLayout.OnChangeListener{
-            override fun onChanged(position: Int) {
-                when(position){
-                    0 -> {
-                        materialCardView.animate().translationY(0f)
-                    }
-                    1 -> materialCardView.animate().translationY(materialCardView.height.toFloat()+50)
+    private fun setupViewPager() {
+        viewPager.adapter = PagerAdapter(supportFragmentManager)
+        viewPager.addOnPageChangeListener(object : OnPageChangeListener {
+            override fun onPageScrollStateChanged(state: Int) {}
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
+
+            override fun onPageSelected(position: Int) {
+                when (position){
+                    0 -> materialCardView.animate().translationY(0f)
+                    else -> materialCardView.animate().translationY(materialCardView.height.toFloat()+50)
                 }
             }
         })
     }
 
-    private fun setupViewPager() {
-        viewPager.adapter = PagerAdapter(supportFragmentManager)
-    }
 
-    private fun initViews(){
-        tabLayout = findViewById(R.id.mainActivityTabLayout)
-        viewPager = findViewById(R.id.MainActivityViewPager)
-        materialCardView = findViewById(R.id.mainActivityButtonsParentCard)
+    private fun setupTabLayout() {
+        tabLayout.setupWithViewPager(viewPager)
     }
 
 }

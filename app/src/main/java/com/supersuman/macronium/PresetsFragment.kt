@@ -11,11 +11,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.commit451.teleprinter.Teleprinter
 import com.google.android.material.textfield.TextInputEditText
-import com.iammert.library.AnimatedTabLayout
 
 class PresetsFragment : Fragment() {
     private lateinit var recyclerView : RecyclerView
-    private lateinit var tabLayout: AnimatedTabLayout
     private lateinit var searchBar: TextInputEditText
     private lateinit var teleprinter : Teleprinter
 
@@ -36,7 +34,6 @@ class PresetsFragment : Fragment() {
     private fun initViews() {
         teleprinter = Teleprinter(requireActivity() as AppCompatActivity, true)
         recyclerView = requireActivity().findViewById(R.id.fragmentPresetsRecyclerView)
-        tabLayout = requireActivity().findViewById(R.id.mainActivityTabLayout)
         searchBar = requireActivity().findViewById(R.id.fragmentPresetsSearchBar)
     }
 
