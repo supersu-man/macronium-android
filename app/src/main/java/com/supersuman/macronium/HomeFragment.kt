@@ -28,7 +28,6 @@ class HomeFragment : Fragment() {
     private lateinit var gridLayout: GridLayout
     private lateinit var connectButton : MaterialCardView
     private lateinit var disconnectButton : MaterialCardView
-    private lateinit var presetsData: PresetsData
     private lateinit var sharedpref : SharedPreferences.OnSharedPreferenceChangeListener
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var repoButton : MaterialCardView
@@ -58,12 +57,11 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initViews()
-        addCardsToGrid(sharedPreferences,"presets")
+        addCardsToGrid()
         initListeners()
     }
 
     private fun initViews(){
-        presetsData = PresetsData()
         connectButton = requireActivity().findViewById(R.id.connectButton)
         gridLayout  = requireActivity().findViewById(R.id.fragmentHomeGridlayout)
         disconnectButton = requireActivity().findViewById(R.id.disconnectButton)
@@ -73,10 +71,9 @@ class HomeFragment : Fragment() {
 
     private fun initListeners() {
 
-        sharedpref = SharedPreferences.OnSharedPreferenceChangeListener {
-                sharedPreferences: SharedPreferences, s: String ->
-            if (s=="presets"){
-                addCardsToGrid(sharedPreferences,s)
+        sharedpref = SharedPreferences.OnSharedPreferenceChangeListener { _: SharedPreferences, s: String ->
+            if (s=="pinned"){
+                addCardsToGrid()
             }
         }
 
@@ -101,7 +98,7 @@ class HomeFragment : Fragment() {
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
-        addCardsToGrid(sharedPreferences,"presets")
+        addCardsToGrid()
     }
 
     override fun onDestroy() {
@@ -110,19 +107,19 @@ class HomeFragment : Fragment() {
     }
 
     @SuppressLint("SetTextI18n")
-    private fun addCardsToGrid(sharedPreferences: SharedPreferences, s : String){
-        val array = loadOrderedCollection(sharedPreferences,s)
+    private fun addCardsToGrid(){
+        val mutableList = loadOrderedCollection(sharedPreferences,"pinned")
         gridLayout.removeAllViews()
         gridLayout.columnCount = getNumberOfColumns()
-        for (i in array){
-            val cardView = makeCard(presetsData.getMappedData(i).toString(),i)
+        for (item in mutableList){
+            val cardView = makeCard(item)
             gridLayout.addView(cardView)
         }
     }
 
-    private fun makeCard(displayName: String, key: String): MaterialCardView {
+    private fun makeCard(item : MutableList<String>): MaterialCardView {
         val textView = TextView(requireContext())
-        textView.text = displayName
+        textView.text = item[0]
         textView.gravity = Gravity.CENTER
         textView.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
 
@@ -140,7 +137,8 @@ class HomeFragment : Fragment() {
         cardView.setOnClickListener {
             val intent = Intent(requireActivity(), BackgroundService::class.java)
             intent.action = "SEND_MESSAGE"
-            intent.putExtra("arg", key)
+            intent.putExtra("key", "key-press")
+            intent.putExtra("arg", item[1])
             requireActivity().startService(intent)
         }
 
@@ -156,17 +154,6 @@ class HomeFragment : Fragment() {
             r.displayMetrics
         ).toInt()
         return px
-    }
-
-
-
-    private fun loadOrderedCollection(sharedPreferences: SharedPreferences, key: String): MutableList<String> {
-        val arrayList = mutableListOf<String>()
-        val jsonArray = JSONArray(sharedPreferences.getString(key, "[]"))
-        for (i in 0 until jsonArray.length()) {
-            arrayList.add(jsonArray.get(i) as String)
-        }
-        return arrayList
     }
 
     private fun getNumberOfColumns(): Int {
