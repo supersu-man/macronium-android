@@ -9,6 +9,13 @@ class PagerAdapter(fragmentManager: FragmentManager) : FragmentPagerAdapter(frag
         return 2
     }
 
+    override fun getPageTitle(position: Int): CharSequence? {
+        return when(position){
+            0 -> "Home"
+            else -> "Presets"
+        }
+    }
+
     override fun getItem(position: Int): Fragment {
         return when(position){
             0 -> HomeFragment()
