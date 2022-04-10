@@ -80,9 +80,9 @@ fun saveOrderedCollection(sharedPreferences: SharedPreferences, mutableList: Mut
 
 fun getSearchResults(string: String): MutableList<MutableList<String>> {
     val mutableList = mutableListOf<MutableList<String>>()
-    for(i in data){
-        if (string.lowercase() in i.toString()){
-            mutableList.add(i)
+    for(item in data){
+        if (string.lowercase() in item.toString().lowercase()){
+            mutableList.add(item)
         }
     }
     return mutableList
