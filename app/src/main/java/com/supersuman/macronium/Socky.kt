@@ -25,7 +25,6 @@ class Socky(private val context: Context) {
     private var socket: Socket? = null
 
     fun connectSocket(address : String) = coroutineScope.launch {
-        println("Function is being called")
         try {
             socket = IO.socket(URI.create("http://$address:$port"))
             socket?.on(EVENT_CONNECT) {
@@ -50,6 +49,7 @@ class Socky(private val context: Context) {
     }
 
     fun sendMessage(event : String, arg : String) = coroutineScope.launch {
+        println("Sending $arg")
         socket?.emit(event, arg)
     }
 }

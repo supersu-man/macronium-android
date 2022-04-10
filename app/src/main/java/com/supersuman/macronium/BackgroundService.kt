@@ -12,6 +12,7 @@ class BackgroundService : Service() {
 
     private val socky = Socky(this)
 
+    @Deprecated("Deprecated in Java")
     override fun onStart(intent: Intent?, startId: Int) {
         when(intent?.action) {
             "CONNECT" -> {
@@ -20,8 +21,11 @@ class BackgroundService : Service() {
                 socky.connectSocket(qrstring)
             }
             "SEND_MESSAGE" -> {
+                val key = intent.getStringExtra("key").toString()
                 val arg = intent.getStringExtra("arg").toString()
-                socky.sendMessage("key-press", arg)
+                if (key == "key-press"){
+                    socky.sendMessage("key-press", arg)
+                }
             }
         }
     }

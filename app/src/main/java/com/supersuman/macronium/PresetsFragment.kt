@@ -18,7 +18,6 @@ class PresetsFragment : Fragment() {
     private lateinit var tabLayout: AnimatedTabLayout
     private lateinit var searchBar: TextInputEditText
     private lateinit var teleprinter : Teleprinter
-    private val presetsData = PresetsData()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_presets, container, false)
@@ -26,17 +25,12 @@ class PresetsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         initViews()
-
         recyclerView.layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.VERTICAL,false)
-        recyclerView.adapter = PresetsRecyclerViewAdapter(requireContext(),presetsData.data)
+        recyclerView.adapter = PresetsRecyclerViewAdapter(requireContext(), data)
+        initListeners()
 
-        searchBar.addTextChangedListener {
-            recyclerView.adapter = PresetsRecyclerViewAdapter(requireContext(),presetsData.getSearchResults(it.toString()))
-        }
-        teleprinter.addOnKeyboardClosedListener {
-            searchBar.clearFocus()
-        }
     }
 
     private fun initViews() {
@@ -44,5 +38,14 @@ class PresetsFragment : Fragment() {
         recyclerView = requireActivity().findViewById(R.id.fragmentPresetsRecyclerView)
         tabLayout = requireActivity().findViewById(R.id.mainActivityTabLayout)
         searchBar = requireActivity().findViewById(R.id.fragmentPresetsSearchBar)
+    }
+
+    private fun initListeners() {
+        searchBar.addTextChangedListener {
+            recyclerView.adapter = PresetsRecyclerViewAdapter(requireContext(), getSearchResults(it.toString()))
+        }
+        teleprinter.addOnKeyboardClosedListener {
+            searchBar.clearFocus()
+        }
     }
 }
