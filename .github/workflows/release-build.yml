@@ -45,7 +45,7 @@ jobs:
         id: changelog
         uses: ardalanamini/auto-changelog@v2
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create Release
         id: create_release
