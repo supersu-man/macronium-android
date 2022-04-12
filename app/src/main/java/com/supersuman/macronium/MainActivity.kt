@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity() {
                 serviceIntent.action = "SEND_MESSAGE"
                 serviceIntent.putExtra("key","open-link")
                 serviceIntent.putExtra("arg", link)
-                startService(serviceIntent) 
+                startService(serviceIntent)
             }
         }
     }
