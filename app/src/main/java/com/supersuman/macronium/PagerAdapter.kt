@@ -4,22 +4,16 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 
-class PagerAdapter(fragmentManager: FragmentManager) : FragmentPagerAdapter(fragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+class PagerAdapter(fragmentManager: FragmentManager, private val fragments : List<Fragment>, private val fragmentNames : List<String>) : FragmentPagerAdapter(fragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
     override fun getCount(): Int {
-        return 2
+        return fragments.size
     }
 
-    override fun getPageTitle(position: Int): CharSequence? {
-        return when(position){
-            0 -> "Home"
-            else -> "Presets"
-        }
+    override fun getPageTitle(position: Int): CharSequence {
+        return fragmentNames[position]
     }
 
     override fun getItem(position: Int): Fragment {
-        return when(position){
-            0 -> HomeFragment()
-            else -> PresetsFragment()
-        }
+        return fragments[position]
     }
 }
