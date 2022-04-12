@@ -34,10 +34,11 @@ class MainActivity : AppCompatActivity() {
         when (intent.action) {
             Intent.ACTION_SEND -> {
                 val link = intent.getStringExtra(Intent.EXTRA_TEXT)
-                val intent = Intent(this, BackgroundService::class.java)
-                intent.action = "SEND_MESSAGE"
-                intent.putExtra("message","Macronium-link <$link>")
-                startService(intent)
+                val serviceIntent = Intent(this, BackgroundService::class.java)
+                serviceIntent.action = "SEND_MESSAGE"
+                serviceIntent.putExtra("key","open-link")
+                serviceIntent.putExtra("arg", link)
+                startService(serviceIntent) 
             }
         }
     }
