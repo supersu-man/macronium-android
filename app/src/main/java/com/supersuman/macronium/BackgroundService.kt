@@ -23,9 +23,7 @@ class BackgroundService : Service() {
             "SEND_MESSAGE" -> {
                 val key = intent.getStringExtra("key").toString()
                 val arg = intent.getStringExtra("arg").toString()
-                if (key == "key-press"){
-                    socky.sendMessage("key-press", arg)
-                }
+                socky.sendMessage(key, arg)
             }
         }
     }

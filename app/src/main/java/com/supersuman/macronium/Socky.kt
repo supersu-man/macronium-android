@@ -32,7 +32,7 @@ class Socky(private val context: Context) {
             }
             socket?.connect()
         } catch (e: Exception) {
-            println(e)
+            myToast(e.toString())
         }
     }
 
@@ -49,7 +49,6 @@ class Socky(private val context: Context) {
     }
 
     fun sendMessage(event : String, arg : String) = coroutineScope.launch {
-        println("Sending $arg")
         socket?.emit(event, arg)
     }
 }

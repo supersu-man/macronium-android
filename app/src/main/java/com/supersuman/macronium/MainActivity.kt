@@ -13,15 +13,17 @@ import com.google.android.material.tabs.TabLayout
 class MainActivity : AppCompatActivity() {
 
     private lateinit var tabLayout: TabLayout
-    private lateinit var viewPager: ViewPager
     private lateinit var materialCardView : MaterialCardView
+    private lateinit var viewPager: ViewPager
+
+    val fragments = listOf(MouseFragment(), HomeFragment(), PresetsFragment())
+    val fragmentNames = listOf("Touch Pad", "Home", "Presets")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         setUpIntent()
-
         initViews()
         setupViewPager()
         setupTabLayout()
@@ -47,20 +49,21 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupViewPager() {
-        viewPager.adapter = PagerAdapter(supportFragmentManager)
+        viewPager.adapter = PagerAdapter(supportFragmentManager, fragments, fragmentNames)
+        viewPager.currentItem = 1
+        viewPager.offscreenPageLimit = 3
         viewPager.addOnPageChangeListener(object : OnPageChangeListener {
             override fun onPageScrollStateChanged(state: Int) {}
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
 
             override fun onPageSelected(position: Int) {
                 when (position){
-                    0 -> materialCardView.animate().translationY(0f)
+                    1 -> materialCardView.animate().translationY(0f)
                     else -> materialCardView.animate().translationY(materialCardView.height.toFloat()+50)
                 }
             }
         })
     }
-
 
     private fun setupTabLayout() {
         tabLayout.setupWithViewPager(viewPager)
