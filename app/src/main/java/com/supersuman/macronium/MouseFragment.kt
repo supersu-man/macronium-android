@@ -94,6 +94,7 @@ class MouseFragment : Fragment() {
     private fun updatePointer(arg : String){
         serviceIntent.putExtra("key", "mouse-move")
         serviceIntent.putExtra("arg", arg)
+        println(arg)
         requireActivity().startService(serviceIntent)
     }
 
