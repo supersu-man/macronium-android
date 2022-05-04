@@ -21,7 +21,7 @@ class MouseFragment : Fragment() {
     private lateinit var serviceIntent : Intent
     private lateinit var activity: MainActivity
 
-    private val prev = mutableMapOf("x" to 0f, "y" to 0f)
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -59,6 +59,10 @@ class MouseFragment : Fragment() {
             }
         }
 
+        val prev = mutableMapOf("x" to 0f, "y" to 0f)
+        var prevDiff = 0f
+        var doubleDown = false
+
         touchPad.setOnTouchListener { _, event ->
 
             if (lockButton.tag == "lock"){
@@ -68,33 +72,65 @@ class MouseFragment : Fragment() {
             val duration = event.eventTime - event.downTime
 
             when (event?.action) {
+
                 MotionEvent.ACTION_DOWN -> {
                     prev["x"] = event.x
                     prev["y"] = event.y
-                    updatePointer("start")
-                }
-                MotionEvent.ACTION_MOVE -> {
-                    val jsonObject = JSONObject()
-                    jsonObject.put("x", event.x- prev["x"]!!)
-                    jsonObject.put("y", event.y- prev["y"]!!)
-                    updatePointer(jsonObject.toString())
+                    startStopGestures("start")
                 }
                 MotionEvent.ACTION_UP -> {
-                    updatePointer( "stop")
+                    startStopGestures("stop")
+                    doubleDown = false
                     if(duration<200){
                         mouseClick("leftclick")
+                    }
+                }
+                MotionEvent.ACTION_MOVE -> {
+
+                    when(event.pointerCount){
+                        1 -> {
+                            val jsonObject = JSONObject()
+                            jsonObject.put("x", event.x- prev["x"]!!)
+                            jsonObject.put("y", event.y- prev["y"]!!)
+                            if (!doubleDown)
+                                updatePointer(jsonObject.toString())
+                        }
+                        2 -> {
+                            if (!doubleDown) {
+                                prev["x"] = event.x
+                                prev["y"] = event.y
+                                prevDiff = event.y - prev["y"]!!
+                            }
+                            val currentDiff = event.y - prev["y"]!!
+                            val jsonObject = JSONObject().apply {
+                                this.put("y", currentDiff - prevDiff)
+                            }
+                            prevDiff = currentDiff
+                            doubleDown = true
+                            updateScrollPointer(jsonObject.toString())
+                        }
                     }
                 }
             }
             return@setOnTouchListener true
         }
+    }
 
+    private fun startStopGestures(arg : String){
+        serviceIntent.putExtra("key", "mouse-gestures")
+        serviceIntent.putExtra("arg", arg)
+        requireActivity().startService(serviceIntent)
+    }
+
+    private fun updateScrollPointer(arg : String){
+        serviceIntent.putExtra("key", "mouse-scroll")
+        serviceIntent.putExtra("arg", arg)
+        requireActivity().startService(serviceIntent)
     }
 
     private fun updatePointer(arg : String){
         serviceIntent.putExtra("key", "mouse-move")
         serviceIntent.putExtra("arg", arg)
-        println(arg)
         requireActivity().startService(serviceIntent)
     }
 
