@@ -11,4 +11,6 @@ Let's you use Windows shortcuts like Screenshot, Media controls, f13 - f14 keys,
 - Scan the QR on Macronium-PC using Macronium on your phone.
 - You are good to go.
 
-![](githubdocs/screenshot.jpg)
+<img src="githubdocs/screenshot1.png" width="200"/>
+<img src="githubdocs/screenshot2.png" width="200"/>
+<img src="githubdocs/screenshot3.png" width="200"/>
