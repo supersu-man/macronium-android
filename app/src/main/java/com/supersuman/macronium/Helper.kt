@@ -5,6 +5,9 @@ import org.json.JSONArray
 import java.util.*
 
 val data :MutableList<MutableList<String>> = mutableListOf(
+    mutableListOf("Task View", "LeftSuper+Tab"),
+    mutableListOf("Show Desktop", "LeftSuper+D"),
+    mutableListOf("Screenshot", "LeftSuper+Print"),
     mutableListOf("Space", "Space"),
     mutableListOf("Tab", "Tab"),
     mutableListOf("Escape", "Escape"),
