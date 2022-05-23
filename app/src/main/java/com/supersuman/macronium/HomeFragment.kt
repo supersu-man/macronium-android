@@ -30,7 +30,6 @@ class HomeFragment : Fragment() {
     private lateinit var disconnectButton : MaterialCardView
     private lateinit var sharedpref : SharedPreferences.OnSharedPreferenceChangeListener
     private lateinit var sharedPreferences: SharedPreferences
-    private lateinit var repoButton : MaterialCardView
 
     val scanQrCode = registerForActivityResult(ScanQRCode(), ::handleResult)
 
@@ -66,7 +65,6 @@ class HomeFragment : Fragment() {
         gridLayout  = requireActivity().findViewById(R.id.fragmentHomeGridlayout)
         disconnectButton = requireActivity().findViewById(R.id.disconnectButton)
         sharedPreferences = requireActivity().getSharedPreferences("PREFERENCES", Context.MODE_PRIVATE)
-        repoButton = requireActivity().findViewById(R.id.repoButton)
     }
 
     private fun initListeners() {
@@ -87,11 +85,6 @@ class HomeFragment : Fragment() {
             try {
                 activity?.stopService(Intent(requireActivity(), BackgroundService::class.java))
             } catch (e:Exception){}
-        }
-
-        repoButton.setOnClickListener {
-            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/supersu-man/macronium-pc/releases/latest"))
-            startActivity(browserIntent)
         }
 
     }
