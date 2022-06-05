@@ -6,7 +6,6 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.content.res.Resources
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.util.TypedValue
@@ -15,12 +14,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.GridLayout
+import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.view.setMargins
 import androidx.fragment.app.Fragment
 import com.google.android.material.card.MaterialCardView
 import io.github.g00fy2.quickie.QRResult
 import io.github.g00fy2.quickie.ScanQRCode
-import org.json.JSONArray
 
 
 class HomeFragment : Fragment() {
@@ -114,8 +114,9 @@ class HomeFragment : Fragment() {
         val textView = TextView(requireContext())
         textView.text = item[0]
         textView.gravity = Gravity.CENTER
-        textView.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-
+        textView.layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT).also {
+            it.setMargins(10)
+        }
         val cardView = MaterialCardView(requireContext())
         val cardParams = GridLayout.LayoutParams(
             GridLayout.spec(GridLayout.UNDEFINED, GridLayout.FILL, 1f),
