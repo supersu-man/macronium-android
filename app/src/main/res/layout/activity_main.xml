@@ -1,5 +1,4 @@
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -18,6 +17,7 @@
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/mainActivityButtonsParentCard"
+        style="@style/Widget.Material3.CardView.Elevated"
         android:layout_width="320dp"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -35,22 +35,24 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
                 android:layout_weight="0.5"
-                app:cardCornerRadius="20dp"
-                app:cardElevation="5dp">
+                app:cardCornerRadius="20dp">
+
                 <LinearLayout
-                    android:gravity="center"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:gravity="center">
+
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_margin="8dp"
                         android:src="@drawable/ic_baseline_camera_alt_24" />
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Scan"/>
+                        android:text="Scan" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -60,22 +62,24 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
                 android:layout_weight="0.5"
-                app:cardCornerRadius="20dp"
-                app:cardElevation="5dp">
+                app:cardCornerRadius="20dp">
+
                 <LinearLayout
-                    android:gravity="center"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:gravity="center">
+
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_margin="8dp"
                         android:src="@drawable/ic_baseline_cancel_24" />
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Disconnect"/>
+                        android:text="Disconnect" />
                 </LinearLayout>
 
             </com.google.android.material.card.MaterialCardView>

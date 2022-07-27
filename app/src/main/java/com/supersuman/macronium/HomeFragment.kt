@@ -26,15 +26,15 @@ import io.github.g00fy2.quickie.ScanQRCode
 class HomeFragment : Fragment() {
 
     private lateinit var gridLayout: GridLayout
-    private lateinit var connectButton : MaterialCardView
-    private lateinit var disconnectButton : MaterialCardView
-    private lateinit var sharedpref : SharedPreferences.OnSharedPreferenceChangeListener
+    private lateinit var connectButton: MaterialCardView
+    private lateinit var disconnectButton: MaterialCardView
+    private lateinit var sharedpref: SharedPreferences.OnSharedPreferenceChangeListener
     private lateinit var sharedPreferences: SharedPreferences
 
     val scanQrCode = registerForActivityResult(ScanQRCode(), ::handleResult)
 
-    private fun handleResult(result : QRResult){
-        if (result is QRResult.QRSuccess){
+    private fun handleResult(result: QRResult) {
+        if (result is QRResult.QRSuccess) {
             val ipAddress = result.content.rawValue
             val intent = Intent(requireActivity(), BackgroundService::class.java).apply {
                 action = "CONNECT"
@@ -48,7 +48,8 @@ class HomeFragment : Fragment() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_home, container, false)
     }
@@ -60,20 +61,22 @@ class HomeFragment : Fragment() {
         initListeners()
     }
 
-    private fun initViews(){
+    private fun initViews() {
         connectButton = requireActivity().findViewById(R.id.connectButton)
-        gridLayout  = requireActivity().findViewById(R.id.fragmentHomeGridlayout)
+        gridLayout = requireActivity().findViewById(R.id.fragmentHomeGridlayout)
         disconnectButton = requireActivity().findViewById(R.id.disconnectButton)
-        sharedPreferences = requireActivity().getSharedPreferences("PREFERENCES", Context.MODE_PRIVATE)
+        sharedPreferences =
+            requireActivity().getSharedPreferences("PREFERENCES", Context.MODE_PRIVATE)
     }
 
     private fun initListeners() {
 
-        sharedpref = SharedPreferences.OnSharedPreferenceChangeListener { _: SharedPreferences, s: String ->
-            if (s=="pinned"){
-                addCardsToGrid()
+        sharedpref =
+            SharedPreferences.OnSharedPreferenceChangeListener { _: SharedPreferences, s: String ->
+                if (s == "pinned") {
+                    addCardsToGrid()
+                }
             }
-        }
 
         sharedPreferences.registerOnSharedPreferenceChangeListener(sharedpref)
 
@@ -84,7 +87,8 @@ class HomeFragment : Fragment() {
         disconnectButton.setOnClickListener {
             try {
                 activity?.stopService(Intent(requireActivity(), BackgroundService::class.java))
-            } catch (e:Exception){}
+            } catch (e: Exception) {
+            }
         }
 
     }
@@ -100,21 +104,24 @@ class HomeFragment : Fragment() {
     }
 
     @SuppressLint("SetTextI18n")
-    private fun addCardsToGrid(){
-        val mutableList = loadOrderedCollection(sharedPreferences,"pinned")
+    private fun addCardsToGrid() {
+        val mutableList = loadOrderedCollection(sharedPreferences, "pinned")
         gridLayout.removeAllViews()
         gridLayout.columnCount = getNumberOfColumns()
-        for (item in mutableList){
+        for (item in mutableList) {
             val cardView = makeCard(item)
             gridLayout.addView(cardView)
         }
     }
 
-    private fun makeCard(item : MutableList<String>): MaterialCardView {
+    private fun makeCard(item: MutableList<String>): MaterialCardView {
         val textView = TextView(requireContext())
         textView.text = item[0]
         textView.gravity = Gravity.CENTER
-        textView.layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT).also {
+        textView.layoutParams = LinearLayout.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.MATCH_PARENT
+        ).also {
             it.setMargins(10)
         }
         val cardView = MaterialCardView(requireContext())
@@ -125,7 +132,7 @@ class HomeFragment : Fragment() {
         cardView.radius = 50f
         cardParams.height = getDP(130f)
         cardParams.width = 0
-        cardParams.setMargins(getDP(5f),getDP(5f),getDP(5f),getDP(5f))
+        cardParams.setMargins(getDP(5f), getDP(5f), getDP(5f), getDP(5f))
         cardView.layoutParams = cardParams
 
         cardView.setOnClickListener {
@@ -140,7 +147,7 @@ class HomeFragment : Fragment() {
         return cardView
     }
 
-    private fun getDP(dp : Float): Int {
+    private fun getDP(dp: Float): Int {
         val r: Resources = this.resources
         val px = TypedValue.applyDimension(
             TypedValue.COMPLEX_UNIT_DIP,
@@ -154,7 +161,7 @@ class HomeFragment : Fragment() {
         val v = this.resources.displayMetrics
         val screenWidth = v.widthPixels.toFloat() / v.densityDpi.toFloat()
         val one = 0.857
-        val columns = (screenWidth/one).toInt()
+        val columns = (screenWidth / one).toInt()
         return columns
     }
 

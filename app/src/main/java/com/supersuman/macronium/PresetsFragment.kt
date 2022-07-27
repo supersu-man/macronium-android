@@ -13,11 +13,15 @@ import com.commit451.teleprinter.Teleprinter
 import com.google.android.material.textfield.TextInputEditText
 
 class PresetsFragment : Fragment() {
-    private lateinit var recyclerView : RecyclerView
+    private lateinit var recyclerView: RecyclerView
     private lateinit var searchBar: TextInputEditText
-    private lateinit var teleprinter : Teleprinter
+    private lateinit var teleprinter: Teleprinter
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_presets, container, false)
     }
 
@@ -25,7 +29,8 @@ class PresetsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         initViews()
-        recyclerView.layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.VERTICAL,false)
+        recyclerView.layoutManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         recyclerView.adapter = PresetsRecyclerViewAdapter(requireContext(), data)
         initListeners()
 
@@ -39,7 +44,8 @@ class PresetsFragment : Fragment() {
 
     private fun initListeners() {
         searchBar.addTextChangedListener {
-            recyclerView.adapter = PresetsRecyclerViewAdapter(requireContext(), getSearchResults(it.toString()))
+            recyclerView.adapter =
+                PresetsRecyclerViewAdapter(requireContext(), getSearchResults(it.toString()))
         }
         teleprinter.addOnKeyboardClosedListener {
             searchBar.clearFocus()
