@@ -1,4 +1,4 @@
-package com.supersuman.macronium
+package com.supersuman.macronium.fragments
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -19,6 +19,9 @@ import android.widget.TextView
 import androidx.core.view.setMargins
 import androidx.fragment.app.Fragment
 import com.google.android.material.card.MaterialCardView
+import com.supersuman.macronium.other.BackgroundService
+import com.supersuman.macronium.R
+import com.supersuman.macronium.loadOrderedCollection
 import io.github.g00fy2.quickie.QRResult
 import io.github.g00fy2.quickie.ScanQRCode
 

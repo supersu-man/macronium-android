@@ -1,4 +1,4 @@
-package com.supersuman.macronium
+package com.supersuman.macronium.adapters
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager

@@ -1,4 +1,4 @@
-package com.supersuman.macronium
+package com.supersuman.macronium.other
 
 import android.content.Context
 import android.os.Looper

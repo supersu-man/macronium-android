@@ -1,4 +1,4 @@
-package com.supersuman.macronium
+package com.supersuman.macronium.other
 
 import android.app.*
 import android.app.PendingIntent.FLAG_IMMUTABLE
@@ -7,6 +7,8 @@ import android.content.Intent
 import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
+import com.supersuman.macronium.MainActivity
+import com.supersuman.macronium.R
 
 class BackgroundService : Service() {
 

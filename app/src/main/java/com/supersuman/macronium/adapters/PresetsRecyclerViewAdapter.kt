@@ -1,4 +1,4 @@
-package com.supersuman.macronium
+package com.supersuman.macronium.adapters
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -8,7 +8,9 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textview.MaterialTextView
-import org.json.JSONArray
+import com.supersuman.macronium.R
+import com.supersuman.macronium.loadOrderedCollection
+import com.supersuman.macronium.saveOrderedCollection
 
 class PresetsRecyclerViewAdapter(context: Context, private val mutableList : MutableList<MutableList<String>>) : RecyclerView.Adapter<PresetsRecyclerViewAdapter.ViewHolder>() {
 

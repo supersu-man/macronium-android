@@ -1,4 +1,4 @@
-package com.supersuman.macronium
+package com.supersuman.macronium.fragments
 
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -9,6 +9,10 @@ import androidx.viewpager.widget.ViewPager
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.tabs.TabLayout
+import com.supersuman.macronium.other.BackgroundService
+import com.supersuman.macronium.MainActivity
+import com.supersuman.macronium.adapters.PagerAdapter
+import com.supersuman.macronium.R
 import org.json.JSONObject
 
 
@@ -141,7 +145,9 @@ class MouseFragment : Fragment() {
     }
 
     private fun lockIt(){
-        viewPager.adapter = PagerAdapter(requireActivity().supportFragmentManager, listOf(MouseFragment()), listOf("Touch Pad"))
+        viewPager.adapter = PagerAdapter(requireActivity().supportFragmentManager, listOf(
+            MouseFragment()
+        ), listOf("Touch Pad"))
     }
 
     private fun unlockIt(){

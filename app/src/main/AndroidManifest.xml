@@ -32,7 +32,7 @@
                 <data android:mimeType="text/plain" />
             </intent-filter>
         </activity>
-        <service android:name=".BackgroundService"
+        <service android:name=".other.BackgroundService"
             android:enabled="true"
            />
     </application>

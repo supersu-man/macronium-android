@@ -1,4 +1,4 @@
-package com.supersuman.macronium
+package com.supersuman.macronium.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,6 +11,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.commit451.teleprinter.Teleprinter
 import com.google.android.material.textfield.TextInputEditText
+import com.supersuman.macronium.adapters.PresetsRecyclerViewAdapter
+import com.supersuman.macronium.R
+import com.supersuman.macronium.data
+import com.supersuman.macronium.getSearchResults
 
 class PresetsFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView

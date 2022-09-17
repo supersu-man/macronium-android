@@ -8,6 +8,11 @@ import androidx.viewpager.widget.ViewPager
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.tabs.TabLayout
+import com.supersuman.macronium.adapters.PagerAdapter
+import com.supersuman.macronium.fragments.HomeFragment
+import com.supersuman.macronium.fragments.MouseFragment
+import com.supersuman.macronium.fragments.PresetsFragment
+import com.supersuman.macronium.other.BackgroundService
 
 
 class MainActivity : AppCompatActivity() {
