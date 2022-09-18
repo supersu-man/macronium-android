@@ -13,6 +13,8 @@ import com.supersuman.macronium.other.BackgroundService
 import com.supersuman.macronium.MainActivity
 import com.supersuman.macronium.adapters.PagerAdapter
 import com.supersuman.macronium.R
+import com.supersuman.macronium.fragmentNames
+import com.supersuman.macronium.fragments
 import org.json.JSONObject
 
 
@@ -151,7 +153,7 @@ class MouseFragment : Fragment() {
     }
 
     private fun unlockIt(){
-        viewPager.adapter = PagerAdapter(requireActivity().supportFragmentManager, activity.fragments, activity.fragmentNames)
+        viewPager.adapter = PagerAdapter(requireActivity().supportFragmentManager, fragments, fragmentNames)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
