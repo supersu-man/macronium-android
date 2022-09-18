@@ -59,14 +59,14 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initViews()
+        initViews(view)
         addCardsToGrid()
         initListeners()
     }
 
-    private fun initViews() {
+    private fun initViews(view: View) {
+        gridLayout = view.findViewById(R.id.fragmentHomeGridlayout)
         connectButton = requireActivity().findViewById(R.id.connectButton)
-        gridLayout = requireActivity().findViewById(R.id.fragmentHomeGridlayout)
         disconnectButton = requireActivity().findViewById(R.id.disconnectButton)
         sharedPreferences =
             requireActivity().getSharedPreferences("PREFERENCES", Context.MODE_PRIVATE)

@@ -20,7 +20,7 @@ class MenuFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val presetsCard = view.findViewById<MaterialCardView>(R.id.presetsCard)
+        val presetsCard: MaterialCardView = view.findViewById(R.id.presetsCard)
         presetsCard.setOnClickListener {
             val transaction = requireActivity().supportFragmentManager.beginTransaction()
             transaction.replace(R.id.fragmentContainer, PresetsFragment())

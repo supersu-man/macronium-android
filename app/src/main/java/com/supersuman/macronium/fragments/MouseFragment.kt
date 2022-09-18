@@ -5,7 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
-import androidx.viewpager.widget.ViewPager
+import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.tabs.TabLayout
@@ -20,27 +20,28 @@ import org.json.JSONObject
 
 class MouseFragment : Fragment() {
 
-    private lateinit var lockButton : FloatingActionButton
-    private lateinit var touchPad : MaterialCardView
-    private lateinit var tablayout : TabLayout
-    private lateinit var viewPager : ViewPager
-    private lateinit var serviceIntent : Intent
+    private lateinit var lockButton: FloatingActionButton
+    private lateinit var touchPad: MaterialCardView
+    private lateinit var tablayout: TabLayout
+    private lateinit var viewPager: ViewPager2
+    private lateinit var serviceIntent: Intent
     private lateinit var activity: MainActivity
-
+    private var unlocked = true
+    private var pages = listOf<Fragment>()
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        initViews()
+        initViews(view)
         initListeners()
     }
 
-    private fun initViews(){
-        lockButton = requireActivity().findViewById(R.id.mouseFragmentLockButton)
-        touchPad  = requireActivity().findViewById(R.id.mouseFragmentTouchPad)
+    private fun initViews(view: View) {
+        lockButton = view.findViewById(R.id.mouseFragmentLockButton)
+        touchPad = view.findViewById(R.id.mouseFragmentTouchPad)
         tablayout = requireActivity().findViewById(R.id.mainActivityTabLayout)
-        viewPager = requireActivity().findViewById(R.id.MainActivityViewPager)
+        viewPager = requireActivity().findViewById(R.id.mainActivityViewPager)
         activity = requireActivity() as MainActivity
         serviceIntent = Intent(requireActivity(), BackgroundService::class.java).apply {
             this.action = "SEND_MESSAGE"
@@ -48,20 +49,20 @@ class MouseFragment : Fragment() {
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    private fun initListeners(){
+    private fun initListeners() {
 
         lockButton.setOnClickListener {
-            when(it.tag){
-                "unlock" -> {
-                    lockIt()
-                    lockButton.setImageResource(R.drawable.ic_outline_lock_24)
-                    lockButton.tag = "lock"
-                }
-                "lock" -> {
-                    unlockIt()
-                    lockButton.setImageResource(R.drawable.ic_outline_lock_open_24)
-                    lockButton.tag = "unlock"
-                }
+            if (unlocked) {
+                unlocked = false
+                tablayout.visibility = View.INVISIBLE
+                lockButton.setImageResource(R.drawable.ic_outline_lock_24)
+                viewPager.isUserInputEnabled = false
+
+            } else {
+                viewPager.isUserInputEnabled = true
+                tablayout.visibility = View.VISIBLE
+                unlocked = true
+                lockButton.setImageResource(R.drawable.ic_outline_lock_open_24)
             }
         }
 
@@ -71,7 +72,7 @@ class MouseFragment : Fragment() {
 
         touchPad.setOnTouchListener { _, event ->
 
-            if (lockButton.tag == "lock"){
+            if (!unlocked) {
                 touchPad.requestDisallowInterceptTouchEvent(true)
             }
 
@@ -87,17 +88,17 @@ class MouseFragment : Fragment() {
                 MotionEvent.ACTION_UP -> {
                     startStopGestures("stop")
                     doubleDown = false
-                    if(duration<200){
+                    if (duration < 200) {
                         mouseClick("leftclick")
                     }
                 }
                 MotionEvent.ACTION_MOVE -> {
 
-                    when(event.pointerCount){
+                    when (event.pointerCount) {
                         1 -> {
                             val jsonObject = JSONObject()
-                            jsonObject.put("x", event.x- prev["x"]!!)
-                            jsonObject.put("y", event.y- prev["y"]!!)
+                            jsonObject.put("x", event.x - prev["x"]!!)
+                            jsonObject.put("y", event.y - prev["y"]!!)
                             if (!doubleDown)
                                 updatePointer(jsonObject.toString())
                         }
@@ -122,41 +123,35 @@ class MouseFragment : Fragment() {
         }
     }
 
-    private fun startStopGestures(arg : String){
+    private fun startStopGestures(arg: String) {
         serviceIntent.putExtra("key", "mouse-gestures")
         serviceIntent.putExtra("arg", arg)
         requireActivity().startService(serviceIntent)
     }
 
-    private fun updateScrollPointer(arg : String){
+    private fun updateScrollPointer(arg: String) {
         serviceIntent.putExtra("key", "mouse-scroll")
         serviceIntent.putExtra("arg", arg)
         requireActivity().startService(serviceIntent)
     }
 
-    private fun updatePointer(arg : String){
+    private fun updatePointer(arg: String) {
         serviceIntent.putExtra("key", "mouse-move")
         serviceIntent.putExtra("arg", arg)
         requireActivity().startService(serviceIntent)
     }
 
-    private fun mouseClick(arg : String){
+    private fun mouseClick(arg: String) {
         serviceIntent.putExtra("key", "mouse-click")
         serviceIntent.putExtra("arg", arg)
         requireActivity().startService(serviceIntent)
     }
 
-    private fun lockIt(){
-        viewPager.adapter = PagerAdapter(requireActivity().supportFragmentManager, listOf(
-            MouseFragment()
-        ), listOf("Touch Pad"))
-    }
-
-    private fun unlockIt(){
-        viewPager.adapter = PagerAdapter(requireActivity().supportFragmentManager, fragments, fragmentNames)
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_mouse, container, false)
     }
 

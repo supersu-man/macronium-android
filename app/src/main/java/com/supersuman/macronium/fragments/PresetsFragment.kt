@@ -32,7 +32,7 @@ class PresetsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        initViews()
+        initViews(view)
         recyclerView.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         recyclerView.adapter = PresetsRecyclerViewAdapter(requireContext(), data)
@@ -40,10 +40,10 @@ class PresetsFragment : Fragment() {
 
     }
 
-    private fun initViews() {
+    private fun initViews(view: View) {
+        recyclerView = view.findViewById(R.id.fragmentPresetsRecyclerView)
+        searchBar = view.findViewById(R.id.fragmentPresetsSearchBar)
         teleprinter = Teleprinter(requireActivity() as AppCompatActivity, true)
-        recyclerView = requireActivity().findViewById(R.id.fragmentPresetsRecyclerView)
-        searchBar = requireActivity().findViewById(R.id.fragmentPresetsSearchBar)
     }
 
     private fun initListeners() {
