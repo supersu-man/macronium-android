@@ -23,7 +23,7 @@ class MenuFragment : Fragment() {
         val presetsCard: MaterialCardView = view.findViewById(R.id.presetsCard)
         presetsCard.setOnClickListener {
             val transaction = requireActivity().supportFragmentManager.beginTransaction()
-            transaction.replace(R.id.fragmentContainer, PresetsFragment())
+            transaction.add(R.id.fragmentContainer, PresetsFragment())
             transaction.addToBackStack(null)
             transaction.commit()
         }

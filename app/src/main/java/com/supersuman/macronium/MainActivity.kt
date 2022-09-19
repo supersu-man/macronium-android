@@ -20,7 +20,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         setUpIntent()
         val transaction = supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.fragmentContainer, MainFragment())
+        transaction.add(R.id.fragmentContainer, MainFragment())
         transaction.commit()
     }
 
