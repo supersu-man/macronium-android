@@ -1,17 +1,17 @@
 package com.supersuman.macronium.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.viewpager.widget.ViewPager
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
+import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.supersuman.macronium.R
-import com.supersuman.macronium.adapters.PagerAdapter
 import com.supersuman.macronium.fragmentNames
 import com.supersuman.macronium.fragments
 
@@ -64,4 +64,15 @@ class MainFragment : Fragment() {
 
     private fun setupTabLayout() {}
 
+}
+
+class PagerAdapter(fragmentActivity: FragmentActivity, private val fragments : List<Fragment>) : FragmentStateAdapter(fragmentActivity) {
+
+    override fun getItemCount(): Int {
+        return fragments.size
+    }
+
+    override fun createFragment(position: Int): Fragment {
+        return fragments[position]
+    }
 }

@@ -4,12 +4,10 @@ package com.supersuman.macronium
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.viewpager.widget.ViewPager
-import androidx.viewpager.widget.ViewPager.OnPageChangeListener
-import com.google.android.material.card.MaterialCardView
-import com.google.android.material.tabs.TabLayout
-import com.supersuman.macronium.adapters.PagerAdapter
-import com.supersuman.macronium.fragments.*
+import com.supersuman.macronium.fragments.HomeFragment
+import com.supersuman.macronium.fragments.MainFragment
+import com.supersuman.macronium.fragments.MenuFragment
+import com.supersuman.macronium.fragments.MouseFragment
 import com.supersuman.macronium.other.BackgroundService
 
 val fragments = listOf(MouseFragment(), HomeFragment(), MenuFragment())
