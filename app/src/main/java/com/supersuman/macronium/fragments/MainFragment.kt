@@ -18,13 +18,12 @@ import com.supersuman.macronium.fragments
 class MainFragment : Fragment() {
 
     private lateinit var tabLayout: TabLayout
-    private lateinit var materialCardView : MaterialCardView
+    private lateinit var materialCardView: MaterialCardView
     private lateinit var viewPager: ViewPager2
 
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_main, container, false)
     }
@@ -37,7 +36,7 @@ class MainFragment : Fragment() {
 
     }
 
-    private fun initViews(view: View){
+    private fun initViews(view: View) {
         tabLayout = view.findViewById(R.id.mainActivityTabLayout)
         viewPager = view.findViewById(R.id.mainActivityViewPager)
         materialCardView = view.findViewById(R.id.mainActivityButtonsParentCard)
@@ -45,25 +44,26 @@ class MainFragment : Fragment() {
 
     private fun setupViewPager() {
         viewPager.adapter = PagerAdapter(requireActivity(), fragments)
+        viewPager.currentItem = 1
         viewPager.offscreenPageLimit = 3
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
             tab.text = fragmentNames[position]
         }.attach()
-        viewPager.registerOnPageChangeCallback(object: ViewPager2.OnPageChangeCallback(){
+        viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
-                when(position){
+                when (position) {
                     1 -> materialCardView.animate().translationY(0f)
-                    else -> materialCardView.animate().translationY(materialCardView.height.toFloat()+50)
+                    else -> materialCardView.animate().translationY(materialCardView.height.toFloat() + 50)
                 }
             }
         })
-        viewPager.currentItem = 2
     }
 
 }
 
-class PagerAdapter(fragmentActivity: FragmentActivity, private val fragments : List<Fragment>) : FragmentStateAdapter(fragmentActivity) {
+class PagerAdapter(fragmentActivity: FragmentActivity, private val fragments: List<Fragment>) :
+    FragmentStateAdapter(fragmentActivity) {
 
     override fun getItemCount(): Int {
         return fragments.size

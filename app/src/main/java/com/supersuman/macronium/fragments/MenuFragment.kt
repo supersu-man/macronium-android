@@ -1,6 +1,5 @@
 package com.supersuman.macronium.fragments
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -16,8 +15,7 @@ class MenuFragment : Fragment() {
     private lateinit var createPresetCard: MaterialCardView
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_menu, container, false)
     }
@@ -39,7 +37,7 @@ class MenuFragment : Fragment() {
     private fun initListeners() {
         presetsCard.setOnClickListener {
             val transaction = requireActivity().supportFragmentManager.beginTransaction()
-            transaction.add(R.id.fragmentContainer, PresetsFragment())
+            transaction.add(R.id.fragmentContainer, DefaultPresetsFragment())
             transaction.addToBackStack(null).commit()
         }
         myPresetsCard.setOnClickListener {

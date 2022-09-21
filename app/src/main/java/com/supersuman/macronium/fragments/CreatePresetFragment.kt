@@ -45,9 +45,7 @@ class CreatePresetFragment : Fragment() {
         initViews(view)
         initListeners()
 
-        thread {
-            addAllKeys()
-        }
+        addAllKeys()
     }
 
     private fun initViews(view: View) {
@@ -67,12 +65,15 @@ class CreatePresetFragment : Fragment() {
     }
 
     private fun addAllKeys() {
-        try {
-            for (key in Keys.values()) {
-                val chip = createAllKeysChip(key.name)
-                requireActivity().runOnUiThread { chipGroup.addView(chip) }
+        thread {
+            try {
+                for (key in Keys.values()) {
+                    val chip = createAllKeysChip(key.name)
+                    requireActivity().runOnUiThread { chipGroup.addView(chip) }
+                }
+            } catch (e: Exception) {
             }
-        } catch (e: Exception) { }
+        }
     }
 
 

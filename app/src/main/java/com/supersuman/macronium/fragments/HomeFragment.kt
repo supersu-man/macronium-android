@@ -15,15 +15,13 @@ import android.widget.TextView
 import androidx.core.view.setMargins
 import androidx.fragment.app.Fragment
 import com.google.android.material.card.MaterialCardView
-import com.supersuman.macronium.other.BackgroundService
 import com.supersuman.macronium.R
 import com.supersuman.macronium.appDatabase
+import com.supersuman.macronium.other.BackgroundService
 import com.supersuman.macronium.other.DatabaseDao
 import com.supersuman.macronium.other.Preset
-import com.supersuman.macronium.other.data
 import io.github.g00fy2.quickie.QRResult
 import io.github.g00fy2.quickie.ScanQRCode
-import kotlin.concurrent.thread
 
 
 class HomeFragment : Fragment() {
@@ -62,6 +60,7 @@ class HomeFragment : Fragment() {
         initListeners()
     }
 
+
     private fun initViews(view: View) {
         databaseDao = appDatabase.databaseDao()
         gridLayout = view.findViewById(R.id.fragmentHomeGridlayout)
@@ -70,7 +69,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun initListeners() {
-        databaseDao.getPinnedPresets().observe(requireActivity()){
+        databaseDao.getPinnedPresets().observe(requireActivity()) {
             pinnedPresets.clear()
             pinnedPresets.addAll(it)
             addCardsToGrid()
@@ -81,7 +80,8 @@ class HomeFragment : Fragment() {
         disconnectButton.setOnClickListener {
             try {
                 activity?.stopService(Intent(requireActivity(), BackgroundService::class.java))
-            } catch (e: Exception) { }
+            } catch (e: Exception) {
+            }
         }
     }
 
@@ -100,8 +100,7 @@ class HomeFragment : Fragment() {
         textView.text = item.presetName
         textView.gravity = Gravity.CENTER
         textView.layoutParams = LinearLayout.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.MATCH_PARENT
+            ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT
         ).also {
             it.setMargins(10)
         }
@@ -111,7 +110,7 @@ class HomeFragment : Fragment() {
             GridLayout.spec(GridLayout.UNDEFINED, GridLayout.FILL, 1f)
         )
         cardView.radius = 50f
-        cardParams.height = getDP(130f)
+        cardParams.height = getDP(100f)
         cardParams.width = 0
         cardParams.setMargins(getDP(5f), getDP(5f), getDP(5f), getDP(5f))
         cardView.layoutParams = cardParams
@@ -131,9 +130,7 @@ class HomeFragment : Fragment() {
     private fun getDP(dp: Float): Int {
         val r: Resources = this.resources
         val px = TypedValue.applyDimension(
-            TypedValue.COMPLEX_UNIT_DIP,
-            dp,
-            r.displayMetrics
+            TypedValue.COMPLEX_UNIT_DIP, dp, r.displayMetrics
         ).toInt()
         return px
     }

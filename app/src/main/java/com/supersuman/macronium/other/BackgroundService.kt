@@ -16,7 +16,7 @@ class BackgroundService : Service() {
 
     @Deprecated("Deprecated in Java")
     override fun onStart(intent: Intent?, startId: Int) {
-        when(intent?.action) {
+        when (intent?.action) {
             "CONNECT" -> {
                 startForeground(69, showNotification())
                 val qrstring = intent.getStringExtra("qrstring").toString()
@@ -35,7 +35,8 @@ class BackgroundService : Service() {
             socky.disconnectSocket()
             stopForeground(true)
             stopSelf()
-        }catch (e:Exception){}
+        } catch (e: Exception) {
+        }
     }
 
     override fun onBind(intent: Intent?): IBinder? {
@@ -54,14 +55,11 @@ class BackgroundService : Service() {
             PendingIntent.getActivity(this, 0, intent, 0)
         }
 
-        val builder = NotificationCompat.Builder(this, "69")
-            .setSmallIcon(R.drawable.ic_notification)
-            .setContentTitle("Connected")
-            .setContentText("Macronium is keeping the connection alive")
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            .setContentIntent(pendingIntent)
-            .setOngoing(true)
-            .build()
+        val builder =
+            NotificationCompat.Builder(this, "69").setSmallIcon(R.drawable.ic_notification).setContentTitle("Connected")
+                .setContentText("Macronium is keeping the connection alive")
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT).setContentIntent(pendingIntent).setOngoing(true)
+                .build()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val name = "Background service"
             val descriptionText = "Notifications related to background services"

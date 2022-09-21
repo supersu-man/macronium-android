@@ -24,7 +24,7 @@ class Socky(private val context: Context) {
     private val port = 6969
     private var socket: Socket? = null
 
-    fun connectSocket(address : String) = coroutineScope.launch {
+    fun connectSocket(address: String) = coroutineScope.launch {
         try {
             socket = IO.socket(URI.create("http://$address:$port"))
             socket?.on(EVENT_CONNECT) {
@@ -40,15 +40,15 @@ class Socky(private val context: Context) {
         socket?.disconnect()
     }
 
-    private fun myToast(string: String) = coroutineScope.launch(Dispatchers.Main){
-        Toast.makeText(context, string,Toast.LENGTH_SHORT).show()
+    private fun myToast(string: String) = coroutineScope.launch(Dispatchers.Main) {
+        Toast.makeText(context, string, Toast.LENGTH_SHORT).show()
     }
 
     fun isConnected(): Boolean? {
         return socket?.connected()
     }
 
-    fun sendMessage(event : String, arg : String) = coroutineScope.launch {
+    fun sendMessage(event: String, arg: String) = coroutineScope.launch {
         socket?.emit(event, arg)
     }
 }

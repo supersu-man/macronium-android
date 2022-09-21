@@ -44,7 +44,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun setUpDb(){
+    private fun setUpDb() {
         appDatabase = Room.databaseBuilder(this, AppDatabase::class.java, presetsDatabaseName).build()
     }
 

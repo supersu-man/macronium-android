@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:background="?android:attr/colorBackground"
     android:padding="20dp"
-    tools:context=".fragments.PresetsFragment">
+    tools:context=".fragments.DefaultPresetsFragment">
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/fragmentPresetsTitle"
@@ -22,27 +22,10 @@
         android:layout_height="match_parent"
         android:layout_below="@id/fragmentPresetsTitle"
         android:layout_marginTop="10dp"
-        android:clipToPadding="false"
-        android:paddingBottom="60dp">
+        android:layout_marginBottom="10dp"
+        android:clipToPadding="false">
 
     </androidx.recyclerview.widget.RecyclerView>
 
-
-    <com.google.android.material.card.MaterialCardView
-        style="@style/Widget.Material3.CardView.Elevated"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        app:cardCornerRadius="20dp">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/fragmentPresetsSearchBar"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="18dp"
-            android:background="@null"
-            android:hint="Search for presets..."
-            android:maxLines="1" />
-    </com.google.android.material.card.MaterialCardView>
 
 </RelativeLayout>

@@ -99,8 +99,7 @@ class MouseFragment : Fragment() {
                             val jsonObject = JSONObject()
                             jsonObject.put("x", event.x - prev["x"]!!)
                             jsonObject.put("y", event.y - prev["y"]!!)
-                            if (!doubleDown)
-                                updatePointer(jsonObject.toString())
+                            if (!doubleDown) updatePointer(jsonObject.toString())
                         }
                         2 -> {
                             if (!doubleDown) {
@@ -148,9 +147,7 @@ class MouseFragment : Fragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_mouse, container, false)
     }
