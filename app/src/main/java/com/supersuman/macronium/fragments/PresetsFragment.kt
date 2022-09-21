@@ -13,19 +13,20 @@ import com.commit451.teleprinter.Teleprinter
 import com.google.android.material.textfield.TextInputEditText
 import com.supersuman.macronium.adapters.PresetsRecyclerViewAdapter
 import com.supersuman.macronium.R
-import com.supersuman.macronium.data
-import com.supersuman.macronium.getSearchResults
+import com.supersuman.macronium.appDatabase
+import com.supersuman.macronium.other.*
+import kotlin.concurrent.thread
 
 class PresetsFragment : Fragment() {
+
     private lateinit var recyclerView: RecyclerView
     private lateinit var searchBar: TextInputEditText
     private lateinit var teleprinter: Teleprinter
+    private lateinit var databaseDao: DatabaseDao
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    private var pinnedPresets: MutableList<Preset> = mutableListOf()
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_presets, container, false)
     }
 
@@ -33,26 +34,22 @@ class PresetsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         initViews(view)
-        recyclerView.layoutManager =
-            LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-        recyclerView.adapter = PresetsRecyclerViewAdapter(requireContext(), data)
-        initListeners()
+        databaseDao.getPinnedPresets().observe(requireActivity()){
+            pinnedPresets.clear()
+            pinnedPresets.addAll(it)
+            recyclerView.adapter?.notifyDataSetChanged()
+        }
+
 
     }
 
     private fun initViews(view: View) {
+        databaseDao = appDatabase.databaseDao()
         recyclerView = view.findViewById(R.id.fragmentPresetsRecyclerView)
         searchBar = view.findViewById(R.id.fragmentPresetsSearchBar)
         teleprinter = Teleprinter(requireActivity() as AppCompatActivity, true)
+        recyclerView.layoutManager = LinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, false)
+        recyclerView.adapter = PresetsRecyclerViewAdapter(pinnedPresets, databaseDao)
     }
 
-    private fun initListeners() {
-        searchBar.addTextChangedListener {
-            recyclerView.adapter =
-                PresetsRecyclerViewAdapter(requireContext(), getSearchResults(it.toString()))
-        }
-        teleprinter.addOnKeyboardClosedListener {
-            searchBar.clearFocus()
-        }
-    }
 }

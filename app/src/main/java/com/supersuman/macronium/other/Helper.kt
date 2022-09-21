@@ -1,61 +1,62 @@
-package com.supersuman.macronium
+package com.supersuman.macronium.other
 
 import android.content.SharedPreferences
 import org.json.JSONArray
-import java.util.*
 
-val data :MutableList<MutableList<String>> = mutableListOf(
-    mutableListOf("Add Desktop", "LeftSuper+LeftControl+D"),
-    mutableListOf("Remove Desktop", "LeftSuper+LeftControl+F4"),
-    mutableListOf("Next Desktop", "LeftSuper+LeftControl+Right"),
-    mutableListOf("Previous Desktop", "LeftSuper+LeftControl+Left"),
-    mutableListOf("Task View", "LeftSuper+Tab"),
-    mutableListOf("Show Desktop", "LeftSuper+D"),
-    mutableListOf("Screenshot", "LeftSuper+Print"),
-    mutableListOf("Space", "Space"),
-    mutableListOf("Tab", "Tab"),
-    mutableListOf("Escape", "Escape"),
-    mutableListOf("Alt", "LeftAlt"),
-    mutableListOf("Control", "LeftControl"),
-    mutableListOf("Shift", "LeftShift"),
-    mutableListOf("Super", "LeftSuper"),
-    mutableListOf("Enter", "Enter"),
-    mutableListOf("Return", "Return"),
-    mutableListOf("Home","Home"),
-    mutableListOf("End","End"),
-    mutableListOf("PageUp","PageUp"),
-    mutableListOf("PageDown","PageDown"),
-    mutableListOf("Print","Print"),
-    mutableListOf("Stop","AudioStop"),
-    mutableListOf("Play","AudioPlay"),
-    mutableListOf("Pause","AudioPause"),
-    mutableListOf("Mute","AudioMute"),
-    mutableListOf("Volume Down","AudioVolDown"),
-    mutableListOf("Volume Up","AudioVolUp"),
-    mutableListOf("Previous Track","AudioPrev"),
-    mutableListOf("Next Track","AudioNext"),
-    mutableListOf("Right","Right"),
-    mutableListOf("Left","Left"),
-    mutableListOf("Up","Up"),
-    mutableListOf("Down","Down")
+val data : MutableList<Preset> = mutableListOf(
+    Preset().also {
+        it.presetName = "Show Desktop"
+        it.presetCommand = mutableListOf(Keys.LeftSuper.name, Keys.D.name)
+    },
+    Preset().also {
+        it.presetName = "Task view"
+        it.presetCommand = mutableListOf(Keys.LeftSuper.name, Keys.Tab.name)
+    },
+    Preset().also {
+        it.presetName = "Screenshot"
+        it.presetCommand = mutableListOf(Keys.LeftSuper.name, Keys.Print.name)
+    },
+    Preset().also {
+        it.presetName = "Stop"
+        it.presetCommand = mutableListOf(Keys.AudioStop.name)
+    },
+    Preset().also {
+        it.presetName = "Play"
+        it.presetCommand = mutableListOf(Keys.AudioPlay.name)
+    },
+    Preset().also {
+        it.presetName = "Pause"
+        it.presetCommand = mutableListOf(Keys.AudioPause.name)
+    },
+    Preset().also {
+        it.presetName = "Mute"
+        it.presetCommand = mutableListOf(Keys.AudioMute.name)
+    },
+    Preset().also {
+        it.presetName = "Volume down"
+        it.presetCommand = mutableListOf(Keys.AudioVolDown.name)
+    },
+    Preset().also {
+        it.presetName = "Volume up"
+        it.presetCommand = mutableListOf(Keys.AudioVolUp.name)
+    },
+    Preset().also {
+        it.presetName = "Previous track"
+        it.presetCommand = mutableListOf(Keys.AudioPrev.name)
+    },
+    Preset().also {
+        it.presetName = "Next track"
+        it.presetCommand = mutableListOf(Keys.LeftSuper.name, Keys.LeftControl.name, Keys.D.name)
+    },
+    Preset().also {
+        it.presetName = "Right"
+        it.presetCommand = mutableListOf(Keys.Right.name)
+    },
+    Preset().also {
+        it.presetName = "Left"
+        it.presetCommand = mutableListOf(Keys.Left.name)
+    }
 )
-
-fun listToString(mutableList: MutableList<String>) : String{
-    val jsonArray = JSONArray()
-    for (i in mutableList){
-        jsonArray.put(i)
-    }
-    return jsonArray.toString()
-}
-
-fun stringToList(string: String): MutableList<String> {
-    val jsonArray = JSONArray(string)
-    val mutableList : MutableList<String> = mutableListOf()
-    for (i in 0 until jsonArray.length()){
-        mutableList.add(jsonArray.getString(i))
-    }
-    return mutableList
-}
 
 fun loadOrderedCollection(sharedPreferences: SharedPreferences ,key: String): MutableList<MutableList<String>> {
     val mutableList : MutableList<MutableList<String>> = mutableListOf()
@@ -89,7 +90,7 @@ fun getSearchResults(string: String): MutableList<MutableList<String>> {
     val mutableList = mutableListOf<MutableList<String>>()
     for(item in data){
         if (string.lowercase() in item.toString().lowercase()){
-            mutableList.add(item)
+            //mutableList.add(item)
         }
     }
     return mutableList

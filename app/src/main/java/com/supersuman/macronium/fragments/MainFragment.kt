@@ -34,7 +34,6 @@ class MainFragment : Fragment() {
 
         initViews(view)
         setupViewPager()
-        setupTabLayout()
 
     }
 
@@ -46,7 +45,6 @@ class MainFragment : Fragment() {
 
     private fun setupViewPager() {
         viewPager.adapter = PagerAdapter(requireActivity(), fragments)
-        viewPager.currentItem = 1
         viewPager.offscreenPageLimit = 3
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
             tab.text = fragmentNames[position]
@@ -60,9 +58,8 @@ class MainFragment : Fragment() {
                 }
             }
         })
+        viewPager.currentItem = 2
     }
-
-    private fun setupTabLayout() {}
 
 }
 

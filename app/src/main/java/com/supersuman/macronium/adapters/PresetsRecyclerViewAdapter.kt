@@ -1,5 +1,6 @@
 package com.supersuman.macronium.adapters
 
+import android.app.Activity
 import android.content.Context
 import android.content.SharedPreferences
 import android.view.LayoutInflater
@@ -9,54 +10,55 @@ import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textview.MaterialTextView
 import com.supersuman.macronium.R
-import com.supersuman.macronium.loadOrderedCollection
-import com.supersuman.macronium.saveOrderedCollection
+import com.supersuman.macronium.other.*
+import kotlin.concurrent.thread
 
-class PresetsRecyclerViewAdapter(context: Context, private val mutableList : MutableList<MutableList<String>>) : RecyclerView.Adapter<PresetsRecyclerViewAdapter.ViewHolder>() {
+class PresetsRecyclerViewAdapter(private val pinnedPresets: MutableList<Preset>, private val presetDao: DatabaseDao) : RecyclerView.Adapter<PresetsRecyclerViewAdapter.ViewHolder>() {
 
-    private val sharedPreferences: SharedPreferences = context.getSharedPreferences("PREFERENCES", Context.MODE_PRIVATE)
-    private val pinnedList: MutableList<MutableList<String>> = loadOrderedCollection(sharedPreferences,"pinned")
 
-    class ViewHolder(view : View) : RecyclerView.ViewHolder(view) {
-        val textView1 : MaterialTextView = view.findViewById(R.id.presetsTextView1)
-        val pin : ImageView = view.findViewById(R.id.presetImageView)
+    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val textView: MaterialTextView = view.findViewById(R.id.presetsTextView1)
+        val pin: ImageView = view.findViewById(R.id.presetImageView)
+        val deleteButton: ImageView = view.findViewById(R.id.presetDeleteButton)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.preset, parent,false))
+        return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.preset, parent, false))
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-
-        holder.textView1.text = mutableList[position][0]
-        if (mutableList[position] in pinnedList){
-            holder.pin.tag = "pinned"
+        holder.deleteButton.visibility = View.GONE
+        holder.textView.text = data[position].presetName
+        if (isPinned(data[position])) {
             holder.pin.setImageResource(R.drawable.ic_baseline_push_pin_24)
+            data[position].pinned = true
         }
         holder.pin.setOnClickListener {
-            if (holder.pin.tag == "unpinned"){
-                holder.pin.tag = "pinned"
-                holder.pin.setImageResource(R.drawable.ic_baseline_push_pin_24)
-                pinnedList.add(mutableList[position])
-                saveOrderedCollection(sharedPreferences, pinnedList,"pinned")
-            } else{
-                holder.pin.tag = "unpinned"
+            if (data[position].pinned) {
                 holder.pin.setImageResource(R.drawable.ic_outline_push_pin_24)
-                pinnedList.remove(mutableList[position])
-                saveOrderedCollection(sharedPreferences, pinnedList,"pinned")
+                data[position].pinned = false
+                thread { presetDao.deletePreset(data[position]) }
+            } else {
+                holder.pin.setImageResource(R.drawable.ic_baseline_push_pin_24)
+                data[position].pinned = true
+                thread { presetDao.insertPresets(data[position]) }
+            }
+            thread {
+                println(presetDao.getPinnedPresets())
             }
         }
     }
 
-    override fun getItemId(position: Int): Long {
-        return position.toLong()
-    }
-
-    override fun getItemViewType(position: Int): Int {
-        return position
-    }
-
     override fun getItemCount(): Int {
-        return mutableList.size
+        return data.size
+    }
+
+    private fun isPinned(myPreset: Preset): Boolean {
+        for (pinnedPreset in pinnedPresets) {
+            if (pinnedPreset.presetName == myPreset.presetName) {
+                return true
+            }
+        }
+        return false
     }
 }
