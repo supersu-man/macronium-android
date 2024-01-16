@@ -1,26 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?android:attr/colorBackground"
-    android:padding="20dp"
-    tools:context=".fragments.MyPresetsFragment">
+    android:padding="20dp">
 
     <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/myPresetsFragmentTitle"
+        android:id="@+id/presetsTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:text="My Presets"
+        android:text="Presets"
         android:textAppearance="@style/TextAppearance.Material3.TitleLarge" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/fragmentMyPresetsRecyclerView"
+        android:id="@+id/presetsRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/myPresetsFragmentTitle"
-        android:layout_marginTop="10dp" />
+        android:layout_below="@id/presetsTitle"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:clipToPadding="false">
+
+    </androidx.recyclerview.widget.RecyclerView>
+
 
 </RelativeLayout>

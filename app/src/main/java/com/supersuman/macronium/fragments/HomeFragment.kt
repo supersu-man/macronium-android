@@ -14,41 +14,23 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.view.setMargins
 import androidx.fragment.app.Fragment
+import androidx.room.Room
 import com.google.android.material.card.MaterialCardView
 import com.supersuman.macronium.R
-import com.supersuman.macronium.appDatabase
-import com.supersuman.macronium.other.BackgroundService
-import com.supersuman.macronium.other.DatabaseDao
+import com.supersuman.macronium.other.AppDatabase
 import com.supersuman.macronium.other.Preset
+import com.supersuman.macronium.other.databaseName
+import com.supersuman.macronium.services.socket
 import io.github.g00fy2.quickie.QRResult
 import io.github.g00fy2.quickie.ScanQRCode
+import kotlin.concurrent.thread
 
 
 class HomeFragment : Fragment() {
 
     private lateinit var gridLayout: GridLayout
-    private lateinit var connectButton: MaterialCardView
-    private lateinit var disconnectButton: MaterialCardView
-    private lateinit var databaseDao: DatabaseDao
+    private var pinnedPresets: List<Preset> = listOf()
 
-    private var pinnedPresets: MutableList<Preset> = mutableListOf()
-
-    private val scanQrCode = registerForActivityResult(ScanQRCode(), ::handleResult)
-
-    private fun handleResult(result: QRResult) {
-        if (result is QRResult.QRSuccess) {
-            val ipAddress = result.content.rawValue
-            val intent = Intent(requireActivity(), BackgroundService::class.java).apply {
-                action = "CONNECT"
-                putExtra("qrstring", ipAddress)
-            }
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                activity?.startForegroundService(intent)
-            } else {
-                activity?.startService(intent)
-            }
-        }
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_home, container, false)
@@ -56,35 +38,14 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initViews(view)
-        initListeners()
-    }
-
-
-    private fun initViews(view: View) {
-        databaseDao = appDatabase.databaseDao()
         gridLayout = view.findViewById(R.id.fragmentHomeGridlayout)
-        connectButton = requireActivity().findViewById(R.id.connectButton)
-        disconnectButton = requireActivity().findViewById(R.id.disconnectButton)
-    }
-
-    private fun initListeners() {
-        databaseDao.getPinnedPresets().observe(requireActivity()) {
-            pinnedPresets.clear()
-            pinnedPresets.addAll(it)
-            addCardsToGrid()
-        }
-        connectButton.setOnClickListener {
-            scanQrCode.launch(null)
-        }
-        disconnectButton.setOnClickListener {
-            try {
-                activity?.stopService(Intent(requireActivity(), BackgroundService::class.java))
-            } catch (e: Exception) {
-            }
+        val db = Room.databaseBuilder(view.context.applicationContext, AppDatabase::class.java, databaseName).build()
+        val presetDao = db.presetDao()
+        thread {
+            pinnedPresets = presetDao.getPinnedPresets()
+            activity?.runOnUiThread { addCardsToGrid() }
         }
     }
-
 
     private fun addCardsToGrid() {
         gridLayout.removeAllViews()
@@ -97,7 +58,7 @@ class HomeFragment : Fragment() {
 
     private fun makeCard(item: Preset): MaterialCardView {
         val textView = TextView(requireContext())
-        textView.text = item.presetName
+        textView.text = item.title
         textView.gravity = Gravity.CENTER
         textView.layoutParams = LinearLayout.LayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT
@@ -114,15 +75,9 @@ class HomeFragment : Fragment() {
         cardParams.width = 0
         cardParams.setMargins(getDP(5f), getDP(5f), getDP(5f), getDP(5f))
         cardView.layoutParams = cardParams
-
         cardView.setOnClickListener {
-            val intent = Intent(requireActivity(), BackgroundService::class.java)
-            intent.action = "SEND_MESSAGE"
-            intent.putExtra("key", "key-press")
-            intent.putExtra("arg", item.presetCommand.joinToString("+"))
-            requireActivity().startService(intent)
+            socket?.emit("key-press", item.command.joinToString("+"))
         }
-
         cardView.addView(textView)
         return cardView
     }
@@ -141,6 +96,16 @@ class HomeFragment : Fragment() {
         val one = 0.857
         val columns = (screenWidth / one).toInt()
         return columns
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val db = Room.databaseBuilder(activity?.applicationContext!!, AppDatabase::class.java, databaseName).build()
+        val presetDao = db.presetDao()
+        thread {
+            pinnedPresets = presetDao.getPinnedPresets()
+            activity?.runOnUiThread { addCardsToGrid() }
+        }
     }
 
 }

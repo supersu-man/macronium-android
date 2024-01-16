@@ -14,7 +14,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.tabs.TabLayout
 import com.supersuman.macronium.MainActivity
 import com.supersuman.macronium.R
-import com.supersuman.macronium.other.BackgroundService
+import com.supersuman.macronium.services.socket
 import org.json.JSONObject
 
 
@@ -24,10 +24,7 @@ class MouseFragment : Fragment() {
     private lateinit var touchPad: MaterialCardView
     private lateinit var tablayout: TabLayout
     private lateinit var viewPager: ViewPager2
-    private lateinit var serviceIntent: Intent
-    private lateinit var activity: MainActivity
     private var unlocked = true
-    private var pages = listOf<Fragment>()
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -42,15 +39,10 @@ class MouseFragment : Fragment() {
         touchPad = view.findViewById(R.id.mouseFragmentTouchPad)
         tablayout = requireActivity().findViewById(R.id.mainActivityTabLayout)
         viewPager = requireActivity().findViewById(R.id.mainActivityViewPager)
-        activity = requireActivity() as MainActivity
-        serviceIntent = Intent(requireActivity(), BackgroundService::class.java).apply {
-            this.action = "SEND_MESSAGE"
-        }
     }
 
     @SuppressLint("ClickableViewAccessibility")
     private fun initListeners() {
-
         lockButton.setOnClickListener {
             if (unlocked) {
                 unlocked = false
@@ -83,13 +75,13 @@ class MouseFragment : Fragment() {
                 MotionEvent.ACTION_DOWN -> {
                     prev["x"] = event.x
                     prev["y"] = event.y
-                    startStopGestures("start")
+                    socket?.emit("mouse-gestures", "start")
                 }
                 MotionEvent.ACTION_UP -> {
-                    startStopGestures("stop")
+                    socket?.emit("mouse-gestures", "stop")
                     doubleDown = false
                     if (duration < 200) {
-                        mouseClick("leftclick")
+                        socket?.emit("mouse-click", "leftclick")
                     }
                 }
                 MotionEvent.ACTION_MOVE -> {
@@ -99,7 +91,9 @@ class MouseFragment : Fragment() {
                             val jsonObject = JSONObject()
                             jsonObject.put("x", event.x - prev["x"]!!)
                             jsonObject.put("y", event.y - prev["y"]!!)
-                            if (!doubleDown) updatePointer(jsonObject.toString())
+
+                            if (!doubleDown)
+                                socket?.emit("mouse-move", jsonObject.toString())
                         }
                         2 -> {
                             if (!doubleDown) {
@@ -113,7 +107,7 @@ class MouseFragment : Fragment() {
                             }
                             prevDiff = currentDiff
                             doubleDown = true
-                            updateScrollPointer(jsonObject.toString())
+                            socket?.emit("mouse-scroll", jsonObject.toString())
                         }
                     }
                 }
@@ -122,33 +116,7 @@ class MouseFragment : Fragment() {
         }
     }
 
-    private fun startStopGestures(arg: String) {
-        serviceIntent.putExtra("key", "mouse-gestures")
-        serviceIntent.putExtra("arg", arg)
-        requireActivity().startService(serviceIntent)
-    }
-
-    private fun updateScrollPointer(arg: String) {
-        serviceIntent.putExtra("key", "mouse-scroll")
-        serviceIntent.putExtra("arg", arg)
-        requireActivity().startService(serviceIntent)
-    }
-
-    private fun updatePointer(arg: String) {
-        serviceIntent.putExtra("key", "mouse-move")
-        serviceIntent.putExtra("arg", arg)
-        requireActivity().startService(serviceIntent)
-    }
-
-    private fun mouseClick(arg: String) {
-        serviceIntent.putExtra("key", "mouse-click")
-        serviceIntent.putExtra("arg", arg)
-        requireActivity().startService(serviceIntent)
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_mouse, container, false)
     }
 

@@ -1,11 +1,14 @@
 package com.supersuman.macronium.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.google.android.material.card.MaterialCardView
+import com.supersuman.macronium.activities.CreatePresetActivity
+import com.supersuman.macronium.activities.PresetsActivity
 import com.supersuman.macronium.R
 
 class MenuFragment : Fragment() {
@@ -36,19 +39,17 @@ class MenuFragment : Fragment() {
 
     private fun initListeners() {
         presetsCard.setOnClickListener {
-            val transaction = requireActivity().supportFragmentManager.beginTransaction()
-            transaction.add(R.id.fragmentContainer, DefaultPresetsFragment())
-            transaction.addToBackStack(null).commit()
+            val intent = Intent(context, PresetsActivity::class.java)
+            context?.startActivity(intent)
         }
         myPresetsCard.setOnClickListener {
-            val transaction = requireActivity().supportFragmentManager.beginTransaction()
-            transaction.add(R.id.fragmentContainer, MyPresetsFragment())
-            transaction.addToBackStack(null).commit()
+            val intent = Intent(context, PresetsActivity::class.java)
+            intent.putExtra("isCustom", true)
+            context?.startActivity(intent)
         }
         createPresetCard.setOnClickListener {
-            val transaction = requireActivity().supportFragmentManager.beginTransaction()
-            transaction.add(R.id.fragmentContainer, CreatePresetFragment())
-            transaction.addToBackStack(null).commit()
+            val intent = Intent(context, CreatePresetActivity::class.java)
+            context?.startActivity(intent)
         }
     }
 
