@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.CAMERA" />
-    <uses-feature android:name="android.hardware.camera.any" />
+
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
@@ -16,8 +13,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Macronium"
-        android:usesCleartextTraffic="true"
-        tools:targetApi="m">
+        android:usesCleartextTraffic="true">
         <activity
             android:name=".activities.CreatePresetActivity"
             android:exported="false" />
@@ -30,14 +26,11 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
-
                 <category android:name="android.intent.category.DEFAULT" />
-
                 <data android:mimeType="text/plain" />
             </intent-filter>
         </activity>
@@ -45,8 +38,7 @@
         <service
             android:name=".services.SocketService"
             android:foregroundServiceType="connectedDevice"
-            android:exported="false"
-            />
+            android:exported="false" />
     </application>
 
 </manifest>

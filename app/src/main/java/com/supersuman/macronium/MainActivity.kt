@@ -73,8 +73,8 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun handleResult(result: QRResult) {
-        if (result is QRResult.QRSuccess) {
-            val ipAddress = result.content.rawValue
+        if (result is QRResult.QRSuccess && result.content.rawValue != null) {
+            val ipAddress = result.content.rawValue!!
             address = ipAddress
             val serviceIntent = Intent(this, SocketService::class.java)
             startService(serviceIntent)
