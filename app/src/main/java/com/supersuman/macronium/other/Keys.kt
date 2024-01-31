@@ -139,5 +139,14 @@ enum class Keys {
     AudioRewind,
     AudioForward,
     AudioRepeat,
-    AudioRandom
+    AudioRandom,
+
+    LeftWin,
+    RightWin,
+    LeftCmd,
+    RightCmd,
+
+    Menu,
+
+    Fn
 }

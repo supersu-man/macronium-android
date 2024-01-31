@@ -26,7 +26,6 @@ class CreatePresetActivity : AppCompatActivity() {
     lateinit var dao: PresetsDao
 
     private val selectedChipsList: MutableList<String> = mutableListOf()
-    private var myPresets: MutableList<Preset> = mutableListOf()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_preset)
