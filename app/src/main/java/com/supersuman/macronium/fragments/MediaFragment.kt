@@ -30,7 +30,7 @@ class MediaFragment : Fragment() {
         view.findViewById<MaterialCardView>(R.id.playButton).setOnClickListener {
             socket?.emit("key-press", Keys.AudioPlay)
         }
-        view.findViewById<MaterialCardView>(R.id.previousButton).setOnClickListener {
+        view.findViewById<MaterialCardView>(R.id.nextButton).setOnClickListener {
             socket?.emit("key-press", Keys.AudioNext)
         }
         view.findViewById<MaterialCardView>(R.id.muteButton).setOnClickListener {
