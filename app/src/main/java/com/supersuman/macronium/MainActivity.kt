@@ -2,8 +2,9 @@ package com.supersuman.macronium
 
 
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
+import android.view.View
+import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
@@ -14,6 +15,7 @@ import com.google.android.material.card.MaterialCardView
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.supersuman.macronium.fragments.HomeFragment
+import com.supersuman.macronium.fragments.MediaFragment
 import com.supersuman.macronium.fragments.MenuFragment
 import com.supersuman.macronium.fragments.MouseFragment
 import com.supersuman.macronium.other.AppDatabase
@@ -29,7 +31,7 @@ import kotlin.concurrent.thread
 class MainActivity : AppCompatActivity() {
 
     private lateinit var tabLayout: TabLayout
-    private lateinit var materialCardView: MaterialCardView
+    private lateinit var materialCardView: LinearLayout
     private lateinit var viewPager: ViewPager2
     private lateinit var connectButton: MaterialCardView
     private lateinit var disconnectButton: MaterialCardView
@@ -44,9 +46,17 @@ class MainActivity : AppCompatActivity() {
         materialCardView = findViewById(R.id.mainActivityButtonsParentCard)
         connectButton = findViewById(R.id.connectButton)
         disconnectButton = findViewById(R.id.disconnectButton)
-
+        com.supersuman.macronium.services.connectButton = connectButton
+        com.supersuman.macronium.services.disconnectButton = disconnectButton
         setupViewPager()
 
+        if(socket?.connected() == true) {
+            connectButton.visibility = View.GONE
+            disconnectButton.visibility = View.VISIBLE
+        } else {
+            connectButton.visibility = View.VISIBLE
+            disconnectButton.visibility = View.GONE
+        }
 
         connectButton.setOnClickListener {
             scanQrCode.launch(null)
@@ -78,24 +88,21 @@ class MainActivity : AppCompatActivity() {
             address = ipAddress
             val serviceIntent = Intent(this, SocketService::class.java)
             startService(serviceIntent)
-            println(ipAddress)
-            println(socket?.id())
         }
     }
 
 
     private fun setupViewPager() {
-        viewPager.adapter = PagerAdapter(this, listOf(MouseFragment(), HomeFragment(), MenuFragment()))
-        viewPager.currentItem = 1
-        viewPager.offscreenPageLimit = 3
+        viewPager.adapter = PagerAdapter(this, listOf(HomeFragment(), MediaFragment(), MouseFragment(), MenuFragment()))
+        viewPager.offscreenPageLimit = 4
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
-            tab.text = listOf("Touch Pad", "Home", "Menu")[position]
+            tab.text = listOf( "Home", "Media", "Touch Pad", "Menu")[position]
         }.attach()
         viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
                 when (position) {
-                    1 -> materialCardView.animate().translationY(0f)
+                    0 -> materialCardView.animate().translationY(0f)
                     else -> materialCardView.animate()
                         .translationY(materialCardView.height.toFloat() + 50)
                 }
@@ -107,11 +114,7 @@ class MainActivity : AppCompatActivity() {
 class PagerAdapter(fragmentActivity: FragmentActivity, private val fragments: List<Fragment>) :
     FragmentStateAdapter(fragmentActivity) {
 
-    override fun getItemCount(): Int {
-        return fragments.size
-    }
+    override fun getItemCount(): Int { return fragments.size }
 
-    override fun createFragment(position: Int): Fragment {
-        return fragments[position]
-    }
+    override fun createFragment(position: Int): Fragment { return fragments[position] }
 }

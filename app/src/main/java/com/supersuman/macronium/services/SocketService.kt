@@ -9,17 +9,25 @@ import android.content.Intent
 import android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_CONNECTED_DEVICE
 import android.os.Build
 import android.os.IBinder
+import android.view.View
 import androidx.core.app.NotificationCompat
+import com.google.android.material.card.MaterialCardView
 import com.supersuman.macronium.MainActivity
 import com.supersuman.macronium.R
 import io.socket.client.IO
 import io.socket.client.Socket
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.net.URI
 import java.net.URISyntaxException
 
 var socket: Socket? = null
 lateinit var address: String
 const val port = 6969
+
+lateinit var connectButton: MaterialCardView
+lateinit var disconnectButton: MaterialCardView
 
 class SocketService: Service() {
 
@@ -31,18 +39,26 @@ class SocketService: Service() {
             socket = IO.socket(URI.create("http://$address:$port"))
             socket?.on(Socket.EVENT_CONNECT) {
                 println("Connected")
+                CoroutineScope(Dispatchers.Main).launch {
+                    connectButton.visibility = View.GONE
+                    disconnectButton.visibility = View.VISIBLE
+                }
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                     startForeground(1, createNotification(), FOREGROUND_SERVICE_TYPE_CONNECTED_DEVICE)
                 } else {
                     startForeground(1, createNotification())
                 }
             }
+            socket?.on(Socket.EVENT_DISCONNECT) {
+                CoroutineScope(Dispatchers.Main).launch {
+                    connectButton.visibility = View.VISIBLE
+                    disconnectButton.visibility = View.GONE
+                }
+            }
             socket?.connect()
         } catch (e: URISyntaxException) {
             e.printStackTrace()
         }
-
-
     }
 
     override fun onDestroy() {
