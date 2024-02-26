@@ -19,6 +19,7 @@ import com.google.android.material.card.MaterialCardView
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.supersuman.macronium.fragments.HomeFragment
+import com.supersuman.macronium.fragments.KeyboardFragment
 import com.supersuman.macronium.fragments.MediaFragment
 import com.supersuman.macronium.fragments.MenuFragment
 import com.supersuman.macronium.fragments.MouseFragment
@@ -80,7 +81,6 @@ class MainActivity : AppCompatActivity() {
                 dao.deletePresets(storedDefaultPresets)
                 dao.insertPresets(defaultPresets)
             }
-            println(dao.getDefaultPresets())
         }
 
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
@@ -103,10 +103,10 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun setupViewPager() {
-        viewPager.adapter = PagerAdapter(this, listOf(HomeFragment(), MediaFragment(), MouseFragment(), MenuFragment()))
-        viewPager.offscreenPageLimit = 4
+        viewPager.adapter = PagerAdapter(this, listOf(HomeFragment(), MediaFragment(), MouseFragment(), KeyboardFragment(), MenuFragment()))
+        viewPager.offscreenPageLimit = 5
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
-            tab.text = listOf( "Home", "Media", "Touch Pad", "Menu")[position]
+            tab.text = listOf( "Home", "Media", "Touch Pad", "Keyboard", "Menu")[position]
         }.attach()
         viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
